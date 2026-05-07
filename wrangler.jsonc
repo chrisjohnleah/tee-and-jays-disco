@@ -1,0 +1,9 @@
+{
+  // Tee and Jays Disco — Cloudflare Pages
+  // Account: john easylamb
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tee-and-jays-disco",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2025-05-07",
+  "compatibility_flags": ["nodejs_compat"]
+}
