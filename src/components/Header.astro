@@ -1,0 +1,54 @@
+---
+import { navItems } from '../data/site';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+const path = Astro.url.pathname;
+const normalise = (href: string) => (href === '/' ? '/' : href.replace(/\/$/, ''));
+const current = normalise(path);
+const isActive = (href: string) => {
+	const target = normalise(href);
+	return target === '/' ? current === '/' : current === target || current.startsWith(`${target}/`);
+};
+---
+
+<header class="header">
+	<Logo />
+
+	<button class="menu-button" type="button" aria-expanded="false" aria-controls="nav" data-menu-button>
+		<span></span><span></span><span></span>
+		<span class="sr-only">Open menu</span>
+	</button>
+
+	<nav id="nav" class="nav" data-menu aria-label="Main navigation">
+		{navItems.map((item) => (
+			<a class:list={[isActive(item.href) && 'is-active']} href={item.href}>
+				{item.label}
+				{item.dropdown && <span class="down" aria-hidden="true"></span>}
+			</a>
+		))}
+	</nav>
+
+	<a class="header-cta" href="/contact/">
+		<Icon name="calendar" />
+		Check Availability
+	</a>
+</header>
+
+<script>
+	const menuButton = document.querySelector('[data-menu-button]');
+	const menu = document.querySelector('[data-menu]');
+
+	menuButton?.addEventListener('click', () => {
+		const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+		menuButton.setAttribute('aria-expanded', String(!isOpen));
+		menu?.classList.toggle('is-open', !isOpen);
+	});
+
+	menu?.querySelectorAll('a').forEach((link) => {
+		link.addEventListener('click', () => {
+			menuButton?.setAttribute('aria-expanded', 'false');
+			menu.classList.remove('is-open');
+		});
+	});
+</script>

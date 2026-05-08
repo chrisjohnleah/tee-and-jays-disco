@@ -1,0 +1,59 @@
+---
+import { contact, serviceOptions } from '../data/site';
+import FaqList from './FaqList.astro';
+import Icon from './Icon.astro';
+import SectionTitle from './SectionTitle.astro';
+
+interface Props {
+	faq?: boolean;
+}
+
+const { faq = true } = Astro.props;
+---
+
+<section class:list={['section', faq ? 'contact-grid' : 'contact-grid contact-only']} id="contact">
+	{faq && <FaqList />}
+
+	<div class="booking">
+		<SectionTitle title="Ready to book your DJ?" subtitle="Let's make your event unforgettable." align="left" />
+		<div class="booking-inner">
+			<div class="contact-methods">
+				<a href={contact.phoneHref}>
+					<span><Icon name="phone" /></span>
+					<strong>{contact.phone}</strong>
+					<small>Call or text anytime</small>
+				</a>
+				<a href={contact.emailHref}>
+					<span><Icon name="mail" /></span>
+					<strong>{contact.email}</strong>
+					<small>We'll reply within 24 hours</small>
+				</a>
+				<div>
+					<span><Icon name="pin" /></span>
+					<strong>{contact.location}</strong>
+					<small>Covering the North West</small>
+				</div>
+				<div class="socials" aria-label="Social links">
+					<strong>Follow us</strong>
+					<span>f</span><span>ig</span><span>tk</span><span>yt</span>
+				</div>
+			</div>
+
+			<form class="form" action={contact.emailHref} method="post" enctype="text/plain">
+				<input name="name" placeholder="Your Name" autocomplete="name" required />
+				<input type="email" name="email" placeholder="Email Address" autocomplete="email" required />
+				<select name="event_type" required>
+					<option value="">Event Type</option>
+					{serviceOptions.map((option) => <option value={option}>{option}</option>)}
+				</select>
+				<input type="date" name="event_date" aria-label="Event Date" />
+				<textarea name="message" placeholder="Message" rows="5" required></textarea>
+				<button class="button primary" type="submit">
+					<Icon name="send" />
+					Send Enquiry
+				</button>
+				<small>We aim to respond to all enquiries within 24 hours.</small>
+			</form>
+		</div>
+	</div>
+</section>

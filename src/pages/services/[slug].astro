@@ -1,0 +1,49 @@
+---
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import Layout from '../../layouts/Layout.astro';
+import { services } from '../../data/site';
+
+const service = services.find((item) => item.slug === Astro.params.slug);
+
+if (!service) {
+	return Astro.redirect('/services/');
+}
+---
+
+<Layout
+	title={`${service.title} DJ Services | TeeJays Disco`}
+	description={`${service.intro} TeeJays Disco covers Tameside, Manchester and the North West.`}
+>
+	<main class="page">
+		<Header />
+		<PageHero title={`${service.title} DJ Services`} subtitle={service.intro} image={service.image} />
+
+		<section class="detail-layout">
+			<img class="detail-image" src={service.image} alt={`${service.title} event`} loading="lazy" />
+			<div class="detail-copy">
+				<h2>{service.title}</h2>
+				<p>{service.intro}</p>
+				<ul class="check-list">
+					{service.highlights.map((highlight) => (
+						<li><span><Icon name="check" /></span>{highlight}</li>
+					))}
+				</ul>
+				<p>
+					Tell us your date, venue and the kind of night you want. We will confirm what is practical,
+					what setup is needed and whether the date is available.
+				</p>
+				<a class="button primary" href="/contact/">
+					<Icon name="calendar" />
+					Check Availability
+				</a>
+			</div>
+		</section>
+
+		<ContactBlock faq={false} />
+		<Footer />
+	</main>
+</Layout>

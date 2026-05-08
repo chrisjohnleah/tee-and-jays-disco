@@ -1,0 +1,15 @@
+---
+interface Props {
+	title: string;
+	subtitle?: string;
+	align?: 'center' | 'left';
+	compact?: boolean;
+}
+
+const { title, subtitle, align = 'center', compact = false } = Astro.props;
+---
+
+<div class:list={['section-title', align === 'left' && 'left', compact && 'compact']}>
+	<h2>{title}</h2>
+	{subtitle && <p>{subtitle}</p>}
+</div>

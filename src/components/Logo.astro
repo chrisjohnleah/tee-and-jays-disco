@@ -1,0 +1,75 @@
+---
+interface Props {
+	href?: string;
+	footer?: boolean;
+}
+
+const { href = '/', footer = false } = Astro.props;
+const idPrefix = footer ? 'teejays-footer' : 'teejays-header';
+---
+
+<a class:list={['logo', footer && 'footer-logo']} href={href} aria-label="TeeJays DJ Services home">
+	<svg class="teejays-logo" viewBox="0 0 930 240" role="img" aria-labelledby={`${idPrefix}-title`}>
+		<title id={`${idPrefix}-title`}>TeeJays DJ Services</title>
+		<defs>
+			<linearGradient id={`${idPrefix}-blue-purple`} x1="0" y1="0" x2="1" y2="1">
+				<stop offset="0" stop-color="#159cff" />
+				<stop offset="0.55" stop-color="#0759c8" />
+				<stop offset="1" stop-color="#7b22ce" />
+			</linearGradient>
+			<linearGradient id={`${idPrefix}-jays`} x1="0" y1="0" x2="1" y2="0">
+				<stop offset="0" stop-color="#137fed" />
+				<stop offset="0.55" stop-color="#0757c6" />
+				<stop offset="1" stop-color="#023a96" />
+			</linearGradient>
+			<radialGradient id={`${idPrefix}-record-sheen`} cx="42%" cy="36%" r="68%">
+				<stop offset="0" stop-color="#13284d" />
+				<stop offset="0.5" stop-color="#051635" />
+				<stop offset="1" stop-color="#010816" />
+			</radialGradient>
+			<linearGradient id={`${idPrefix}-line`} x1="0" y1="0" x2="1" y2="0">
+				<stop offset="0" stop-color="#0a70df" />
+				<stop offset="0.58" stop-color="#073fc4" />
+				<stop offset="1" stop-color="#8120d2" />
+			</linearGradient>
+		</defs>
+
+		<g class="record-mark">
+			<path class="record-arc" stroke={`url(#${idPrefix}-blue-purple)`} d="M198 61C163 31 104 27 62 54C16 84 4 145 31 188" />
+			<path class="record-arc record-arc-lower" stroke={`url(#${idPrefix}-blue-purple)`} d="M31 188C59 235 125 247 175 215" />
+			<circle class="record-disc" fill={`url(#${idPrefix}-record-sheen)`} cx="112" cy="128" r="73" />
+			<circle class="record-label" cx="112" cy="128" r="28" />
+			<circle class="record-hole" cx="112" cy="128" r="6" />
+			<g class="record-grooves">
+				<path d="M48 128c0-39 30-71 69-74" />
+				<path d="M58 128c0-32 25-59 57-62" />
+				<path d="M68 128c0-26 20-48 47-50" />
+				<path d="M158 74c18 19 27 45 25 72" />
+				<path d="M168 66c23 28 31 63 23 98" />
+				<path d="M181 87c13 24 16 52 7 78" />
+				<path d="M176 181c-20 17-47 25-74 21" />
+			</g>
+		</g>
+
+		<g class="wordmark" transform="skewX(-9)">
+			<text class="wordmark-tee" x="226" y="126">Tee</text>
+			<text class="wordmark-jays" fill={`url(#${idPrefix}-jays)`} x="455" y="126">Jays</text>
+		</g>
+
+		<path class="logo-underline" stroke={`url(#${idPrefix}-line)`} d="M230 178H646" />
+		<path class="logo-underline purple" d="M646 178H748" />
+		<text class="service-line" x="237" y="232">DJ SERVICES</text>
+
+		<g class="waveform" fill={`url(#${idPrefix}-line)`}>
+			<rect x="765" y="137" width="6" height="14" rx="2" />
+			<rect x="779" y="125" width="7" height="38" rx="2" />
+			<rect x="795" y="107" width="8" height="72" rx="2" />
+			<rect x="812" y="91" width="9" height="104" rx="2" />
+			<rect x="831" y="66" width="10" height="154" rx="2" />
+			<rect x="852" y="91" width="9" height="104" rx="2" />
+			<rect x="870" y="112" width="8" height="62" rx="2" />
+			<rect x="887" y="127" width="7" height="32" rx="2" />
+			<rect x="902" y="137" width="6" height="14" rx="2" />
+		</g>
+	</svg>
+</a>

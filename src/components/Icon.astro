@@ -1,0 +1,15 @@
+---
+import { icons, type IconName } from '../data/site';
+
+interface Props {
+	name: IconName;
+	label?: string;
+	class?: string;
+}
+
+const { name, label, class: className } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 24 24" aria-hidden={label ? undefined : 'true'} aria-label={label}>
+	<Fragment set:html={icons[name]} />
+</svg>

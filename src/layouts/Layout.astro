@@ -1,23 +1,79 @@
+---
+import '../styles/site.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'TeeJays Disco | Mobile DJs in Tameside & Manchester',
+	description = 'Tony and John from TeeJays Disco provide professional mobile DJ services for weddings, birthdays, corporate events, and private parties across Tameside, Manchester, and the North West.',
+} = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.site?.toString() ?? 'https://teeandjaysdisco.com'} />
+		<title>{title}</title>
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
 
-<style>
-	html,
+<style is:global>
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+		background: #020814;
+	}
+
 	body {
 		margin: 0;
 		width: 100%;
-		height: 100%;
+		min-height: 100%;
+		font-family: 'Outfit', system-ui, sans-serif;
+		color: #f8fbff;
+		background: #020814;
+		text-rendering: geometricPrecision;
+	}
+
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	img {
+		display: block;
+		max-width: 100%;
+	}
+
+	::selection {
+		background: rgba(33, 151, 255, 0.42);
+		color: #ffffff;
 	}
 </style>

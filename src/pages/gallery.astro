@@ -1,0 +1,21 @@
+---
+import ContactBlock from '../components/ContactBlock.astro';
+import Footer from '../components/Footer.astro';
+import GalleryStrip from '../components/GalleryStrip.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Gallery | TeeJays Disco" description="See TeeJays Disco event photos from weddings, birthdays, corporate parties and community events.">
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Lights, dancefloors and proper party moments"
+      subtitle="A look at the kind of nights TeeJays Disco helps create across Tameside, Manchester and the North West."
+    />
+    <GalleryStrip full />
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

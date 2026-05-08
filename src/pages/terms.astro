@@ -1,0 +1,29 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Terms & Conditions | TeeJays Disco" description="TeeJays Disco terms and conditions.">
+  <main class="page">
+    <Header />
+    <PageHero title="Terms & Conditions" subtitle="Booking terms for TeeJays Disco events." />
+    <section class="section">
+      <article class="content-card legal-card">
+        <h2>Terms & Conditions</h2>
+        <p>
+          Bookings are confirmed once TeeJays Disco has agreed the event date, venue, timing and requirements with the client.
+          Any deposit, balance payment or cancellation terms should be confirmed in writing as part of the booking conversation.
+        </p>
+        <p>
+          The client is responsible for ensuring the venue provides safe access, suitable power and enough setup time for sound and lighting equipment.
+        </p>
+        <p>
+          For booking questions, call <a href="tel:07710123456">07710 123456</a> or email <a href="mailto:info@teejaysdisco.co.uk">info@teejaysdisco.co.uk</a>.
+        </p>
+      </article>
+    </section>
+    <Footer />
+  </main>
+</Layout>

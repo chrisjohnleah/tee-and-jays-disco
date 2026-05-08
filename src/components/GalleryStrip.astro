@@ -1,0 +1,20 @@
+---
+import { gallery } from '../data/site';
+import SectionTitle from './SectionTitle.astro';
+
+interface Props {
+	limit?: number;
+	full?: boolean;
+}
+
+const { limit = 6, full = false } = Astro.props;
+const images = full ? gallery : gallery.slice(0, limit);
+---
+
+<section class:list={['gallery', full && 'gallery-full']} id="gallery">
+	<SectionTitle title="Gallery" compact />
+	<div class="gallery-row">
+		{images.map((image) => <img src={image} alt="" loading="lazy" />)}
+	</div>
+	{!full && <p>More photos on our <a href="/gallery/">Gallery</a> page.</p>}
+</section>

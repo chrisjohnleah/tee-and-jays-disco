@@ -1,0 +1,20 @@
+---
+import ContactBlock from '../components/ContactBlock.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact | TeeJays Disco" description="Contact TeeJays Disco to check availability for weddings, birthdays, corporate events, school discos and private parties.">
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Ready to book your DJ?"
+      subtitle="Tell us the date, venue and event type. We will confirm availability and talk through what the night needs."
+      image="/images/teejay-hero.png"
+    />
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

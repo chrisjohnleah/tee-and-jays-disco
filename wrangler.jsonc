@@ -1,9 +1,16 @@
 {
-  // Tee and Jays Disco — Cloudflare Pages
+  // Tee and Jays Disco — Astro build config
   // Account: john easylamb
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tee-and-jays-disco",
-  "pages_build_output_dir": "./dist",
   "compatibility_date": "2025-05-07",
-  "compatibility_flags": ["nodejs_compat"]
+  "compatibility_flags": ["nodejs_compat"],
+  "images": {
+    "binding": "IMAGES"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SESSION"
+    }
+  ]
 }

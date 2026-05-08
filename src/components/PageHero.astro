@@ -1,0 +1,22 @@
+---
+interface Props {
+	title: string;
+	subtitle: string;
+	image?: string;
+}
+
+const {
+	title,
+	subtitle,
+	image = 'https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=1800',
+} = Astro.props;
+---
+
+<section class="page-hero">
+	<img src={image} alt="" />
+	<div class="page-hero-wash" aria-hidden="true"></div>
+	<div class="page-hero-inner">
+		<h1>{title}</h1>
+		<p>{subtitle}</p>
+	</div>
+</section>

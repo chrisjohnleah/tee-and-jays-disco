@@ -1,0 +1,24 @@
+---
+import { faqs } from '../data/site';
+import Icon from './Icon.astro';
+import SectionTitle from './SectionTitle.astro';
+
+interface Props {
+	showAnswers?: boolean;
+}
+
+const { showAnswers = false } = Astro.props;
+---
+
+<div class="faq" id="faq">
+	<SectionTitle title="Frequently asked questions" align="left" />
+	<div class="faq-list">
+		{faqs.map((faq) => (
+			<details {...(showAnswers ? { open: true } : {})}>
+				<summary>{faq.question}<span><Icon name="plus" /></span></summary>
+				{showAnswers && <p>{faq.answer}</p>}
+			</details>
+		))}
+	</div>
+	<p class="need-help">Can't find the answer you need? <a href="/contact/">Get in touch</a>, we're happy to help!</p>
+</div>

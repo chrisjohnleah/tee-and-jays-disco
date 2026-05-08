@@ -1,0 +1,23 @@
+---
+import ContactBlock from '../components/ContactBlock.astro';
+import FaqList from '../components/FaqList.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="FAQ | TeeJays Disco" description="Answers to common TeeJays Disco booking questions, including prices, areas, music and setup.">
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Questions before you book"
+      subtitle="Straight answers on pricing, travel, setup, music choices and what we need from your venue."
+    />
+    <section class="section">
+      <FaqList showAnswers />
+    </section>
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

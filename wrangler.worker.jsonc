@@ -1,0 +1,22 @@
+{
+  // Tee and Jays Disco — Cloudflare Worker deploy config
+  // Run `npm run build` before `npx wrangler deploy --config wrangler.worker.jsonc`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tee-and-jays-disco",
+  "main": "./dist/server/entry.mjs",
+  "compatibility_date": "2025-05-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist/client"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SESSION"
+    }
+  ],
+  "no_bundle": true
+}

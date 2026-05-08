@@ -1,0 +1,56 @@
+---
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Layout from '../../layouts/Layout.astro';
+import { services } from '../../data/site';
+---
+
+<Layout
+	title="DJ Services | TeeJays Disco"
+	description="Explore TeeJays Disco services for weddings, birthdays, anniversaries, corporate events, school discos, pubs, clubs and community events."
+>
+	<main class="page">
+		<Header />
+		<PageHero
+			title="Mobile DJ services for proper parties"
+			subtitle="Weddings, birthdays, corporate events and family celebrations across Tameside, Manchester and the North West."
+		/>
+
+		<section class="section services">
+			<SectionTitle title="Our Services" subtitle="Every booking is planned around your guests, venue and event timings." />
+			<div class="service-grid">
+				{services.map((service) => <ServiceCard service={service} />)}
+			</div>
+		</section>
+
+		<section class="content-panel">
+			<div class="content-card">
+				<h2>A word on cheap DJs</h2>
+				<p>
+					A low quote can mean weak sound, no backup, poor prep or a playlist on repeat.
+					With TeeJays, you are booking two experienced party DJs who treat your night like it matters.
+				</p>
+				<ul class="check-list">
+					<li><span><Icon name="check" /></span>Professional sound, lighting and setup.</li>
+					<li><span><Icon name="check" /></span>More than 35 years of experience each.</li>
+					<li><span><Icon name="check" /></span>Party music across decades, paced for the room.</li>
+				</ul>
+			</div>
+			<div class="content-card">
+				<h2>Not just a playlist</h2>
+				<p>
+					We are party DJs, not club-style deck mixers. The job is atmosphere, timing, humour,
+					clear announcements and knowing what to play next when the room changes.
+				</p>
+			</div>
+		</section>
+
+		<ContactBlock faq={false} />
+		<Footer />
+	</main>
+</Layout>

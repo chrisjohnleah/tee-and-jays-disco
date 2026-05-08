@@ -1,0 +1,32 @@
+---
+import { areas, contact, navItems } from '../data/site';
+import Logo from './Logo.astro';
+---
+
+<footer class="footer">
+	<div>
+		<Logo footer />
+		<p>Tony &amp; John, 35+ years each of music, memories and dancefloors.</p>
+	</div>
+	<div>
+		<h3>Quick Links</h3>
+		{navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+	</div>
+	<div>
+		<h3>Areas We Cover</h3>
+		<div class="footer-areas">
+			{areas.map((area) => <a href="/contact/">{area}</a>)}
+			<a href="/contact/">and surrounding areas</a>
+		</div>
+	</div>
+	<div>
+		<h3>Get In Touch</h3>
+		<a href={contact.phoneHref}>{contact.phone}</a>
+		<a href={contact.emailHref}>{contact.email}</a>
+		<span>{contact.location}</span>
+	</div>
+</footer>
+<div class="legal">
+	<span>© 2024 TeeJays Disco. All rights reserved.</span>
+	<span><a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms &amp; Conditions</a></span>
+</div>

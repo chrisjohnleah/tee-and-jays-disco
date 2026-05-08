@@ -1,0 +1,29 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Privacy Policy | TeeJays Disco" description="TeeJays Disco privacy policy.">
+  <main class="page">
+    <Header />
+    <PageHero title="Privacy Policy" subtitle="How TeeJays Disco handles enquiry details and booking information." />
+    <section class="section">
+      <article class="content-card legal-card">
+        <h2>Privacy Policy</h2>
+        <p>
+          When you contact TeeJays Disco, we use the information you provide to respond to your enquiry, check availability and manage your booking.
+          This may include your name, contact details, event date, venue and event requirements.
+        </p>
+        <p>
+          We do not sell personal information. We only keep booking information for as long as needed to provide our services, handle records and respond to follow-up questions.
+        </p>
+        <p>
+          To ask about your information, email <a href="mailto:info@teejaysdisco.co.uk">info@teejaysdisco.co.uk</a>.
+        </p>
+      </article>
+    </section>
+    <Footer />
+  </main>
+</Layout>

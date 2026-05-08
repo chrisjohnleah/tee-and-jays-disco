@@ -1,0 +1,54 @@
+---
+import AboutArea from '../components/AboutArea.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About Tony & John | TeeJays Disco" description="Meet Tony and John, North West party DJs with more than 35 years of experience each.">
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Tony & John, party DJs who know how to read a room"
+      subtitle="More than 35 years of experience each, built on packed dancefloors, easy-going hosting and music that keeps every generation involved."
+      image="/images/teejay-hero.png"
+    />
+
+    <AboutArea />
+
+    <section class="section">
+      <div class="content-panel">
+        <article class="content-card">
+          <Icon name="music" label="Music" />
+          <h2>We are party DJs, not laptop babysitters</h2>
+          <p>
+            TeeJays Disco is about atmosphere first. We do not turn up to hide behind gear and play a fixed playlist.
+            We keep the night moving, have a laugh with the room, and work through 60s, 70s, 80s, 90s and 00s favourites so everyone has a way in.
+          </p>
+        </article>
+        <article class="content-card">
+          <Icon name="users" label="Guests" />
+          <h2>Every age group matters</h2>
+          <p>
+            The best parties are not built for one corner of the room. We want the 18-year-old, the aunties, the workmates and the grandparents
+            all getting a moment where the music feels like it was chosen for them.
+          </p>
+        </article>
+        <article class="content-card">
+          <Icon name="star" label="Recommendations" />
+          <h2>Most bookings come from recommendations</h2>
+          <p>
+            We get recommended because people remember how the night felt. Professional sound, sensible planning and two experienced DJs who know
+            when to lift the pace, when to change direction and when to leave a full dancefloor alone.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

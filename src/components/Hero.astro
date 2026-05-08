@@ -1,0 +1,33 @@
+---
+import { contact } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="hero">
+	<img class="hero-bg" src="https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=1800" alt="" />
+	<img class="hero-djs" src="/images/teejay-hero-wide.jpg" alt="John and Tony behind a professional DJ console in a party setting" />
+	<div class="hero-wash" aria-hidden="true"></div>
+	<div class="hero-inner">
+		<div class="hero-copy">
+			<h1>
+				Experienced mobile DJs for unforgettable events in
+				<span>Tameside &amp; Manchester</span>
+			</h1>
+			<p>Tony &amp; John, providing professional disco and entertainment with 35+ years of experience each. Great music, brilliant vibes, memories that last.</p>
+			<div class="hero-actions">
+				<a class="button primary" href="/contact/">
+					<Icon name="calendar" />
+					Get a Free Quote
+				</a>
+				<a class="button ghost" href={contact.phoneHref}>
+					<Icon name="phone" />
+					Call Now
+				</a>
+			</div>
+			<a class="phone-link" href={contact.phoneHref}>
+				<Icon name="phone" />
+				{contact.phone}
+			</a>
+		</div>
+	</div>
+</section>

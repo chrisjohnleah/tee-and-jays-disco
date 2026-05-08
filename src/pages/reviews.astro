@@ -1,0 +1,21 @@
+---
+import ContactBlock from '../components/ContactBlock.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import ReviewsGrid from '../components/ReviewsGrid.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Reviews | TeeJays Disco" description="Read TeeJays Disco reviews from wedding, party, pub and corporate clients.">
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Recommended after every kind of party"
+      subtitle="Clients book TeeJays for the music, but they recommend us because the room feels looked after from start to finish."
+    />
+    <ReviewsGrid title="What our clients say" />
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

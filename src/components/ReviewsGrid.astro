@@ -1,0 +1,31 @@
+---
+import { testimonials } from '../data/site';
+import Icon from './Icon.astro';
+import SectionTitle from './SectionTitle.astro';
+
+interface Props {
+	limit?: number;
+	title?: string;
+}
+
+const { limit, title = 'What our clients say' } = Astro.props;
+const reviews = typeof limit === 'number' ? testimonials.slice(0, limit) : testimonials;
+---
+
+<section class="section reviews" id="reviews">
+	<SectionTitle title={title} compact />
+	<div class="review-grid">
+		{reviews.map((review) => (
+			<article class="review-card">
+				<div class="stars" aria-label="Five star review">
+					{Array.from({ length: 5 }).map(() => <Icon name="star" />)}
+				</div>
+				<blockquote>"{review.quote}"</blockquote>
+				<div class="review-person">
+					<img src={review.image} alt="" loading="lazy" />
+					<p><strong>{review.name}</strong><span>{review.location}</span></p>
+				</div>
+			</article>
+		))}
+	</div>
+</section>

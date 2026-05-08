@@ -1,0 +1,15 @@
+---
+import { stats } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="stat-strip" aria-label="TeeJays highlights">
+	<div class="stat-wrap">
+		{stats.map((stat) => (
+			<div class="stat">
+				{stat.badge ? <div class="years-badge"><strong>{stat.badge}</strong></div> : <Icon name={stat.icon} />}
+				<p><strong>{stat.value}</strong><span>{stat.label}</span></p>
+			</div>
+		))}
+	</div>
+</section>
