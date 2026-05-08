@@ -3,6 +3,7 @@
   // Run `npm run build` before `npx wrangler deploy --config wrangler.worker.jsonc`.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tee-and-jays-disco",
+  "account_id": "29ff2841d256c2cf5a789a56f8927a04",
   "main": "./dist/server/entry.mjs",
   "compatibility_date": "2025-05-07",
   "compatibility_flags": ["nodejs_compat"],
