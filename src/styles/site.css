@@ -220,7 +220,7 @@ svg {
 	width: 100%;
 	object-fit: cover;
 	object-position: center center;
-	filter: brightness(0.94) contrast(1.08) saturate(1);
+	filter: brightness(1.05) contrast(1.06) saturate(1.02);
 	opacity: 1;
 	transform: none;
 	transform-origin: center;
@@ -229,8 +229,8 @@ svg {
 .hero-wash,
 .page-hero-wash {
 	background:
-		linear-gradient(90deg, rgba(2, 8, 19, 0.98) 0%, rgba(2, 8, 19, 0.82) 35%, rgba(2, 8, 19, 0.18) 58%, rgba(2, 8, 19, 0.54) 100%),
-		linear-gradient(0deg, rgba(2, 8, 19, 0.86), transparent 54%);
+		linear-gradient(90deg, rgba(2, 8, 19, 0.9) 0%, rgba(2, 8, 19, 0.68) 34%, rgba(2, 8, 19, 0.08) 58%, rgba(2, 8, 19, 0.28) 100%),
+		linear-gradient(0deg, rgba(2, 8, 19, 0.68), transparent 58%);
 }
 
 .hero-inner,
@@ -241,6 +241,11 @@ svg {
 	height: 100%;
 	margin: 0 auto;
 	padding: 0 54px;
+}
+
+.hero-inner {
+	max-width: none;
+	padding: 0 clamp(32px, 3.6vw, 70px);
 }
 
 .hero-copy {

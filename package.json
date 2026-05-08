@@ -10,8 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "astro build && wrangler pages deploy",
-    "cf:dev": "wrangler pages dev"
+    "deploy": "astro build && wrangler deploy --config wrangler.worker.jsonc",
+    "deploy:worker": "astro build && wrangler deploy --config wrangler.worker.jsonc",
+    "cf:dev": "astro build && wrangler dev --config wrangler.worker.jsonc"
   },
   "dependencies": {
     "astro": "^6.3.0"

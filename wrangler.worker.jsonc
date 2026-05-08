@@ -5,18 +5,27 @@
   "name": "tee-and-jays-disco",
   "account_id": "29ff2841d256c2cf5a789a56f8927a04",
   "main": "./dist/server/entry.mjs",
+  "base_dir": "./dist/server",
   "compatibility_date": "2025-05-07",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist/client"
   },
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": ["**/*.js", "**/*.mjs"]
+    }
+  ],
+  "find_additional_modules": true,
   "images": {
     "binding": "IMAGES"
   },
   "kv_namespaces": [
     {
-      "binding": "SESSION"
+      "binding": "SESSION",
+      "id": "e690209524684d0cbf14f707588cc78c"
     }
   ],
   "no_bundle": true
