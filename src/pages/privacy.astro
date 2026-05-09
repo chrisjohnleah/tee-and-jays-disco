@@ -3,9 +3,11 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import PageHero from '../components/PageHero.astro';
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
 ---
 
-<Layout title="Privacy Policy | TeeJays Disco" description="TeeJays Disco privacy policy.">
+<Layout title="Privacy Policy | TeeJays Disco" description="How TeeJays Disco collects, uses and protects your personal data when you make an enquiry, book an event or use this website.">
   <main class="page">
     <Header />
     <PageHero title="Privacy Policy" subtitle="How TeeJays Disco handles enquiry details and booking information." />

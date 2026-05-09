@@ -1,0 +1,44 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas } from '../../data/site';
+
+export const prerender = true;
+---
+
+<Layout
+	title="Areas We Cover | Mobile DJ Hire across Tameside & Manchester"
+	description="TeeJays Disco mobile DJ services across Tameside, Manchester, Stockport, Oldham and the North West. Pick your area for local venue knowledge."
+>
+	<main class="page">
+		<Header />
+		<PageHero
+			title="Areas We Cover"
+			subtitle="Based in Tameside, regularly playing across Greater Manchester and the North West."
+		/>
+
+		<section class="section">
+			<Breadcrumbs items={[{ label: 'Areas' }]} />
+			<SectionTitle title="Pick your area" subtitle="Local DJs with venue knowledge wherever your party is." />
+			<div class="area-list-grid">
+				{areas.map((area) => (
+					<a class="area-list-card" href={`/areas/${area.slug}/`}>
+						<div class="area-list-icon"><Icon name="pin" /></div>
+						<h3>{area.name}</h3>
+						<p>{area.description}</p>
+						<span class="area-list-cta">Mobile DJ in {area.name} →</span>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<ContactBlock faq={false} />
+		<Footer />
+	</main>
+</Layout>

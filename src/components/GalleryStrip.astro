@@ -14,7 +14,7 @@ const images = full ? gallery : gallery.slice(0, limit);
 <section class:list={['gallery', full && 'gallery-full']} id="gallery">
 	<SectionTitle title="Gallery" compact />
 	<div class="gallery-row">
-		{images.map((image) => <img src={image} alt="" loading="lazy" />)}
+		{images.map((image) => <img src={image.src} alt={image.alt} width="900" height="600" loading="lazy" decoding="async" />)}
 	</div>
 	{!full && <p>More photos on our <a href="/gallery/">Gallery</a> page.</p>}
 </section>

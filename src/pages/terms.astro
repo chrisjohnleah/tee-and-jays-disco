@@ -3,9 +3,11 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import PageHero from '../components/PageHero.astro';
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
 ---
 
-<Layout title="Terms & Conditions | TeeJays Disco" description="TeeJays Disco terms and conditions.">
+<Layout title="Terms & Conditions | TeeJays Disco" description="The booking terms for TeeJays Disco mobile DJ services — deposits, cancellations, equipment, set-up, and event-day expectations.">
   <main class="page">
     <Header />
     <PageHero title="Terms & Conditions" subtitle="Booking terms for TeeJays Disco events." />

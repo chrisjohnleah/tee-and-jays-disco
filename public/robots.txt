@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://teeandjaysdisco.com/sitemap-index.xml

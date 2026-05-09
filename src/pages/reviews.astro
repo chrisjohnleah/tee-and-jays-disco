@@ -5,6 +5,8 @@ import Header from '../components/Header.astro';
 import PageHero from '../components/PageHero.astro';
 import ReviewsGrid from '../components/ReviewsGrid.astro';
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
 ---
 
 <Layout title="Reviews | TeeJays Disco" description="Read TeeJays Disco reviews from wedding, party, pub and corporate clients.">
@@ -14,7 +16,7 @@ import Layout from '../layouts/Layout.astro';
       title="Recommended after every kind of party"
       subtitle="Clients book TeeJays for the music, but they recommend us because the room feels looked after from start to finish."
     />
-    <ReviewsGrid title="What our clients say" />
+    <ReviewsGrid title="What our clients say" includeSchema />
     <ContactBlock faq={false} />
     <Footer />
   </main>

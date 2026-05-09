@@ -17,7 +17,7 @@ import Icon from './Icon.astro';
 				))}
 			</ul>
 		</div>
-		<img src="https://images.pexels.com/photos/14925309/pexels-photo-14925309.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy" />
+		<img src="/images/gallery/dj-setup.jpg" alt="TeeJays Disco professional sound and lighting setup at a venue" width="1200" height="800" loading="lazy" decoding="async" />
 		<div class="mini-signature">
 			<Icon name="star" />
 			<strong>35+ Years Each</strong>
@@ -38,7 +38,7 @@ import Icon from './Icon.astro';
 			</div>
 			<div class="area-list">
 				<p>We regularly provide DJ services in:</p>
-				{areas.map((area) => <span>{area}</span>)}
+				{areas.map((area) => <a href={`/areas/${area.slug}/`}>{area.name}</a>)}
 				<small>and surrounding areas</small>
 				<p>Travel further afield? Just ask!</p>
 			</div>

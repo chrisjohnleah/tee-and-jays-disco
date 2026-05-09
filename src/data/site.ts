@@ -1,3 +1,18 @@
+export const business = {
+	name: 'TeeJays Disco',
+	legalName: 'TeeJays Disco',
+	url: 'https://teeandjaysdisco.com',
+	logo: 'https://teeandjaysdisco.com/favicon.svg',
+	description: 'Professional mobile DJ services for weddings, birthdays, anniversaries, corporate events and parties across Tameside, Manchester and the North West.',
+	priceRange: '££',
+	serviceArea: ['Tameside', 'Manchester', 'Stockport', 'Oldham', 'Bolton', 'Cheshire', 'North West England'],
+	addressLocality: 'Tameside',
+	addressRegion: 'Greater Manchester',
+	addressCountry: 'GB',
+	founded: '1989',
+	sameAs: [] as string[],
+};
+
 export const contact = {
 	phone: '07710 123456',
 	phoneHref: 'tel:07710123456',
@@ -6,10 +21,25 @@ export const contact = {
 	location: 'Tameside, Greater Manchester',
 };
 
-export const navItems = [
+type NavItem = {
+	label: string;
+	href: string;
+	children?: { label: string; href: string }[];
+};
+
+export const navItems: NavItem[] = [
 	{ label: 'Home', href: '/' },
-	{ label: 'Services', href: '/services/', dropdown: true },
-	{ label: 'About Us', href: '/about/' },
+	{
+		label: 'Services',
+		href: '/services/',
+		children: [], // populated below from services array
+	},
+	{
+		label: 'Areas',
+		href: '/areas/',
+		children: [], // populated below from areas array
+	},
+	{ label: 'About', href: '/about/' },
 	{ label: 'Gallery', href: '/gallery/' },
 	{ label: 'Reviews', href: '/reviews/' },
 	{ label: 'FAQ', href: '/faq/' },
@@ -83,7 +113,7 @@ export const services = [
 		intro: 'Birthday parties work best when every age group gets a moment. We build the night in sections so nobody is left out.',
 		icon: 'cake',
 		accent: '#8b4dff',
-		image: 'https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=900',
+		image: '/images/services/birthday-parties.jpg',
 		highlights: ['18ths, 21sts, 30ths, 40ths, 50ths and beyond', '60s through current chart favourites', 'Announcements and friendly hosting'],
 	},
 	{
@@ -93,7 +123,7 @@ export const services = [
 		intro: 'For anniversaries and family celebrations, we shape the music around the people in the room and the memories behind the night.',
 		icon: 'heart',
 		accent: '#e44ab8',
-		image: 'https://images.pexels.com/photos/3171768/pexels-photo-3171768.jpeg?auto=compress&cs=tinysrgb&w=900',
+		image: '/images/services/anniversaries.jpg',
 		highlights: ['Classic party sections across decades', 'Special songs planned in advance', 'Warm hosting without taking over'],
 	},
 	{
@@ -103,7 +133,7 @@ export const services = [
 		intro: 'Reliable entertainment for staff parties, awards nights, Christmas events and company celebrations across Greater Manchester.',
 		icon: 'briefcase',
 		accent: '#2d9dff',
-		image: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=900',
+		image: '/images/services/corporate-events.jpg',
 		highlights: ['Professional setup and punctual arrival', 'Background music into party mode', 'Clear communication with organisers'],
 	},
 	{
@@ -113,7 +143,7 @@ export const services = [
 		intro: 'Safe, controlled school disco entertainment with age-appropriate tracks and the right energy for the room.',
 		icon: 'graduate',
 		accent: '#19c98f',
-		image: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=900',
+		image: '/images/services/school-discos.jpg',
 		highlights: ['Age-appropriate playlists', 'Reliable setup and clear sound', 'Friendly atmosphere and sensible pacing'],
 	},
 	{
@@ -123,7 +153,7 @@ export const services = [
 		intro: 'For the right venues and events, we bring crowd-reading, requests and decades of party music experience.',
 		icon: 'music',
 		accent: '#774cff',
-		image: 'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=900',
+		image: '/images/services/pub-club-nights.jpg',
 		highlights: ['Party-focused sets, not generic playlists', 'Requests handled properly', 'Experienced hosts who can keep control'],
 	},
 	{
@@ -163,44 +193,49 @@ export const testimonials = [
 		quote: 'Tony & John were amazing at our wedding! The dancefloor was full all night.',
 		name: 'Emma & Liam',
 		location: 'Hyde',
-		image: 'https://i.pravatar.cc/96?img=47',
+		rating: 5,
+		eventType: 'Wedding',
 	},
 	{
 		quote: 'Brilliant DJs, great mix of music and very professional. Highly recommend.',
 		name: 'Sarah',
 		location: 'Ashton-under-Lyne',
-		image: 'https://i.pravatar.cc/96?img=32',
+		rating: 5,
+		eventType: 'Birthday Party',
 	},
 	{
 		quote: 'They know how to read a crowd and keep the party going. 10/10!',
 		name: 'Mark',
 		location: 'Stalybridge',
-		image: 'https://i.pravatar.cc/96?img=12',
+		rating: 5,
+		eventType: 'Birthday Party',
 	},
 	{
 		quote: 'Reliable, friendly and made our corporate night a huge success.',
 		name: 'Lisa',
 		location: 'Manchester',
-		image: 'https://i.pravatar.cc/96?img=45',
+		rating: 5,
+		eventType: 'Corporate Event',
 	},
 	{
 		quote: 'We have used TeeJays Disco for our pub nights for years. Simply the best.',
 		name: 'The Royal Oak',
 		location: 'Oldham',
-		image: '/favicon.svg',
+		rating: 5,
+		eventType: 'Pub Night',
 	},
 ];
 
 export const gallery = [
-	'https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/2111015/pexels-photo-2111015.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/14925309/pexels-photo-14925309.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/3171768/pexels-photo-3171768.jpeg?auto=compress&cs=tinysrgb&w=900',
-	'https://images.pexels.com/photos/976866/pexels-photo-976866.jpeg?auto=compress&cs=tinysrgb&w=900',
+	{ src: '/images/gallery/dancefloor-lights.jpg', alt: 'Packed dancefloor under DJ stage lighting at a TeeJays Disco party night' },
+	{ src: '/images/gallery/birthday-celebration.jpg', alt: 'Birthday party guests dancing to TeeJays Disco in Tameside' },
+	{ src: '/images/gallery/wedding-reception.jpg', alt: 'Wedding reception with the bride and groom on the dancefloor' },
+	{ src: '/images/gallery/dj-decks.jpg', alt: 'Tony at the DJ decks reading the room at a private function' },
+	{ src: '/images/gallery/club-night.jpg', alt: 'Lively club night crowd dancing to a TeeJays set' },
+	{ src: '/images/gallery/school-disco.jpg', alt: 'Children enjoying a TeeJays Disco school disco event' },
+	{ src: '/images/gallery/dj-setup.jpg', alt: 'TeeJays Disco professional sound and lighting setup at a venue' },
+	{ src: '/images/gallery/anniversary-party.jpg', alt: 'Couple dancing at an anniversary celebration with TeeJays Disco' },
+	{ src: '/images/gallery/party-crowd.jpg', alt: 'Party crowd cheering as the DJ drops a favourite track' },
 ];
 
 export const faqs = [
@@ -230,6 +265,60 @@ export const faqs = [
 	},
 ];
 
-export const areas = ['Ashton-under-Lyne', 'Hyde', 'Stalybridge', 'Oldham', 'Stockport', 'Manchester'];
+export const areas = [
+	{
+		slug: 'tameside',
+		name: 'Tameside',
+		description: 'Mobile DJs covering weddings, birthdays and parties across the whole of Tameside — Ashton, Hyde, Stalybridge, Denton, Droylsden, Mossley and Dukinfield.',
+		venues: ['The Park, Dukinfield', 'Tameside Hippodrome', 'Stamford Park', 'Hartshead Pike', 'Hyde Town Hall'],
+	},
+	{
+		slug: 'manchester',
+		name: 'Manchester',
+		description: 'Reliable Manchester DJ hire for city-centre venues, suburban hotels and private parties across Greater Manchester.',
+		venues: ['The Midland Hotel', 'Manchester Hall', 'Victoria Warehouse', 'The Lowry Hotel', 'Town Hall venues'],
+	},
+	{
+		slug: 'ashton-under-lyne',
+		name: 'Ashton-under-Lyne',
+		description: 'Local Ashton DJs for weddings, birthdays and community events with full sound and lighting setups.',
+		venues: ['Ashton Town Hall', 'The Witchwood', 'Local clubs and pubs'],
+	},
+	{
+		slug: 'hyde',
+		name: 'Hyde',
+		description: 'Hyde-based party DJs known for first dances, family birthdays and packed dancefloors all across SK14.',
+		venues: ['Hyde Town Hall', 'Werneth Low venues', 'Local social clubs'],
+	},
+	{
+		slug: 'stalybridge',
+		name: 'Stalybridge',
+		description: 'Stalybridge mobile DJ hire for private parties, weddings and pub nights with a true Tameside accent.',
+		venues: ['Astley Cheetham Hall', 'Stalybridge Civic Hall', 'Local pubs and clubs'],
+	},
+	{
+		slug: 'oldham',
+		name: 'Oldham',
+		description: 'Oldham wedding and party DJs covering Saddleworth, Lees, Royton, Chadderton and the surrounding area.',
+		venues: ['Saddleworth Hotel', 'Oldham Event Centre', 'The Old Bell Inn'],
+	},
+	{
+		slug: 'stockport',
+		name: 'Stockport',
+		description: 'Stockport DJ hire for weddings, milestone birthdays and corporate events from Bramhall to Marple.',
+		venues: ['Bredbury Hall', 'Stockport Plaza', 'Bramall Hall'],
+	},
+];
+
+// Populate dropdown children from data arrays
+navItems.find((item) => item.label === 'Services')!.children = services.map((service) => ({
+	label: service.title,
+	href: `/services/${service.slug}/`,
+}));
+
+navItems.find((item) => item.label === 'Areas')!.children = areas.map((area) => ({
+	label: area.name,
+	href: `/areas/${area.slug}/`,
+}));
 
 export const serviceOptions = ['Wedding', 'Birthday Party', 'Anniversary', 'Corporate Event', 'School Disco', 'Community Event', 'Other'];

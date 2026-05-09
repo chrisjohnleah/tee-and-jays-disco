@@ -3,17 +3,19 @@ interface Props {
 	title: string;
 	subtitle: string;
 	image?: string;
+	imageAlt?: string;
 }
 
 const {
 	title,
 	subtitle,
-	image = 'https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=1800',
+	image = '/images/services/birthday-parties.jpg',
+	imageAlt = '',
 } = Astro.props;
 ---
 
 <section class="page-hero">
-	<img src={image} alt="" />
+	<img src={image} alt={imageAlt} width="1800" height="900" fetchpriority="high" decoding="async" />
 	<div class="page-hero-wash" aria-hidden="true"></div>
 	<div class="page-hero-inner">
 		<h1>{title}</h1>

@@ -1,4 +1,5 @@
 ---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ContactBlock from '../../components/ContactBlock.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
@@ -8,6 +9,8 @@ import SectionTitle from '../../components/SectionTitle.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import Layout from '../../layouts/Layout.astro';
 import { services } from '../../data/site';
+
+export const prerender = true;
 ---
 
 <Layout
@@ -22,6 +25,7 @@ import { services } from '../../data/site';
 		/>
 
 		<section class="section services">
+			<Breadcrumbs items={[{ label: 'Services' }]} />
 			<SectionTitle title="Our Services" subtitle="Every booking is planned around your guests, venue and event timings." />
 			<div class="service-grid">
 				{services.map((service) => <ServiceCard service={service} />)}

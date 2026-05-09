@@ -1,0 +1,73 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import Layout from '../layouts/Layout.astro';
+import { areas, services } from '../data/site';
+
+export const prerender = true;
+---
+
+<Layout
+	title="Sitemap | TeeJays Disco"
+	description="Full site map for TeeJays Disco — every page, service and area we cover, in one place."
+>
+	<main class="page">
+		<Header />
+		<PageHero title="Sitemap" subtitle="Every page on the TeeJays Disco site." />
+
+		<section class="section">
+			<Breadcrumbs items={[{ label: 'Sitemap' }]} />
+
+			<div class="sitemap-grid">
+				<div class="sitemap-col">
+					<h2>Main Pages</h2>
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/about/">About</a></li>
+						<li><a href="/gallery/">Gallery</a></li>
+						<li><a href="/reviews/">Reviews</a></li>
+						<li><a href="/faq/">FAQ</a></li>
+						<li><a href="/contact/">Contact</a></li>
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Services</h2>
+					<ul>
+						<li><a href="/services/">All Services</a></li>
+						{services.map((service) => (
+							<li><a href={`/services/${service.slug}/`}>{service.title}</a></li>
+						))}
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Areas Covered</h2>
+					<ul>
+						<li><a href="/areas/">All Areas</a></li>
+						{areas.map((area) => (
+							<li><a href={`/areas/${area.slug}/`}>Mobile DJ in {area.name}</a></li>
+						))}
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Legal</h2>
+					<ul>
+						<li><a href="/privacy/">Privacy Policy</a></li>
+						<li><a href="/terms/">Terms &amp; Conditions</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<p class="sitemap-xml-note">
+				Looking for the machine-readable XML sitemap? It's at <a href="/sitemap-index.xml">/sitemap-index.xml</a>.
+			</p>
+		</section>
+
+		<Footer />
+	</main>
+</Layout>

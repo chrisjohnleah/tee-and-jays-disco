@@ -21,12 +21,30 @@ const isActive = (href: string) => {
 	</button>
 
 	<nav id="nav" class="nav" data-menu aria-label="Main navigation">
-		{navItems.map((item) => (
-			<a class:list={[isActive(item.href) && 'is-active']} href={item.href}>
-				{item.label}
-				{item.dropdown && <span class="down" aria-hidden="true"></span>}
-			</a>
-		))}
+		{navItems.map((item) =>
+			item.children && item.children.length > 0 ? (
+				<div class:list={['nav-item has-children', isActive(item.href) && 'is-active']} data-dropdown>
+					<a class="nav-link" href={item.href} aria-haspopup="true" aria-expanded="false" data-dropdown-toggle>
+						{item.label}
+						<span class="down" aria-hidden="true"></span>
+					</a>
+					<div class="dropdown" role="menu">
+						<a class="dropdown-overview" href={item.href} role="menuitem">
+							All {item.label} →
+						</a>
+						{item.children.map((child) => (
+							<a class:list={[isActive(child.href) && 'is-active']} href={child.href} role="menuitem">
+								{child.label}
+							</a>
+						))}
+					</div>
+				</div>
+			) : (
+				<a class:list={['nav-link', isActive(item.href) && 'is-active']} href={item.href}>
+					{item.label}
+				</a>
+			),
+		)}
 	</nav>
 
 	<a class="header-cta" href="/contact/">
@@ -45,10 +63,34 @@ const isActive = (href: string) => {
 		menu?.classList.toggle('is-open', !isOpen);
 	});
 
-	menu?.querySelectorAll('a').forEach((link) => {
+	menu?.querySelectorAll('a:not(.dropdown-overview)').forEach((link) => {
 		link.addEventListener('click', () => {
 			menuButton?.setAttribute('aria-expanded', 'false');
 			menu.classList.remove('is-open');
+		});
+	});
+
+	// Mobile/touch dropdown toggle
+	const dropdowns = document.querySelectorAll<HTMLElement>('[data-dropdown]');
+	dropdowns.forEach((wrapper) => {
+		const toggle = wrapper.querySelector<HTMLAnchorElement>('[data-dropdown-toggle]');
+		toggle?.addEventListener('click', (event) => {
+			if (window.matchMedia('(max-width: 960px)').matches) {
+				event.preventDefault();
+				const isOpen = wrapper.classList.toggle('is-open');
+				toggle.setAttribute('aria-expanded', String(isOpen));
+			}
+		});
+	});
+
+	// Close dropdowns on outside click (desktop)
+	document.addEventListener('click', (event) => {
+		if (!(event.target instanceof Element)) return;
+		dropdowns.forEach((wrapper) => {
+			if (!wrapper.contains(event.target as Node)) {
+				wrapper.classList.remove('is-open');
+				wrapper.querySelector('[data-dropdown-toggle]')?.setAttribute('aria-expanded', 'false');
+			}
 		});
 	});
 </script>

@@ -1,0 +1,121 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, services } from '../../data/site';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+	return areas.map((area) => ({ params: { slug: area.slug } }));
+}
+
+const { slug } = Astro.params;
+const area = areas.find((a) => a.slug === slug)!;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? business.url;
+
+const serviceSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	serviceType: 'Mobile DJ Hire',
+	provider: {
+		'@type': 'LocalBusiness',
+		'@id': `${siteUrl}/#business`,
+		name: business.name,
+	},
+	areaServed: {
+		'@type': 'Place',
+		name: area.name,
+		address: {
+			'@type': 'PostalAddress',
+			addressLocality: area.name,
+			addressRegion: business.addressRegion,
+			addressCountry: business.addressCountry,
+		},
+	},
+	name: `Mobile DJ Hire in ${area.name}`,
+	description: area.description,
+	url: `${siteUrl}/areas/${area.slug}/`,
+};
+---
+
+<Layout
+	title={`Mobile DJ Hire ${area.name} | TeeJays Disco`}
+	description={`Mobile DJ hire in ${area.name} for weddings, birthdays and parties. Tony & John — 35+ years each, professional sound and lighting, fully insured.`}
+>
+	<script slot="head" type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+	<main class="page">
+		<Header />
+		<PageHero
+			title={`Mobile DJ Hire in ${area.name}`}
+			subtitle={`Trusted local DJs for weddings, birthdays and parties across ${area.name} and the surrounding villages.`}
+		/>
+
+		<section class="section">
+			<Breadcrumbs items={[{ label: 'Areas', href: '/areas/' }, { label: area.name }]} />
+
+			<div class="content-panel">
+				<div class="content-card">
+					<h2>DJs in {area.name} who actually know the area</h2>
+					<p>{area.description}</p>
+					<p>
+						Whether it's a wedding at a hotel, a milestone birthday at a function room or a community event in a hall,
+						we bring full sound and lighting, decades of party experience and the local knowledge to plan around traffic,
+						parking and venue access in {area.name}.
+					</p>
+					<ul class="check-list">
+						<li><span><Icon name="check" /></span>Local to {area.name} — short travel, on-time setup</li>
+						<li><span><Icon name="check" /></span>Tony &amp; John, 35+ years each on the dancefloor</li>
+						<li><span><Icon name="check" /></span>Fully insured with quality sound and lighting</li>
+						<li><span><Icon name="check" /></span>Music shaped around your guests, not a fixed playlist</li>
+					</ul>
+					<a class="button primary" href="/contact/">
+						<Icon name="calendar" />
+						Check Availability in {area.name}
+					</a>
+				</div>
+				<div class="content-card">
+					<h2>Venues we know in {area.name}</h2>
+					<p>Some of the spots we've played, set up at, or know well in the area:</p>
+					<ul class="check-list">
+						{area.venues.map((venue) => (
+							<li><span><Icon name="pin" /></span>{venue}</li>
+						))}
+					</ul>
+					<p>Booked elsewhere in {area.name}? No problem — we work in private homes, marquees, sports clubs and any function space with safe access and power.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="section services">
+			<SectionTitle title={`Services we cover in ${area.name}`} subtitle="Pick the kind of event — every booking is planned around your guests, venue and timings." />
+			<div class="service-grid">
+				{services.map((service) => <ServiceCard service={service} />)}
+			</div>
+		</section>
+
+		<section class="section">
+			<SectionTitle title="Other areas we cover" subtitle="Based in Tameside, regularly travelling across Greater Manchester and the North West." />
+			<div class="area-link-grid">
+				{areas
+					.filter((a) => a.slug !== area.slug)
+					.map((a) => (
+						<a class="area-link-card" href={`/areas/${a.slug}/`}>
+							<Icon name="pin" />
+							<span>{a.name}</span>
+						</a>
+					))}
+			</div>
+		</section>
+
+		<ContactBlock faq={false} />
+		<Footer />
+	</main>
+</Layout>

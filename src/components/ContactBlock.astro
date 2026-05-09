@@ -40,14 +40,24 @@ const { faq = true } = Astro.props;
 			</div>
 
 			<form class="form" action={contact.emailHref} method="post" enctype="text/plain">
-				<input name="name" placeholder="Your Name" autocomplete="name" required />
-				<input type="email" name="email" placeholder="Email Address" autocomplete="email" required />
-				<select name="event_type" required>
-					<option value="">Event Type</option>
+				<label class="sr-only" for="contact-name">Your name</label>
+				<input id="contact-name" name="name" placeholder="Your name" autocomplete="name" required />
+
+				<label class="sr-only" for="contact-email">Email address</label>
+				<input id="contact-email" type="email" name="email" placeholder="Email address" autocomplete="email" required />
+
+				<label class="sr-only" for="contact-event-type">Event type</label>
+				<select id="contact-event-type" name="event_type" required>
+					<option value="">Event type</option>
 					{serviceOptions.map((option) => <option value={option}>{option}</option>)}
 				</select>
-				<input type="date" name="event_date" aria-label="Event Date" />
-				<textarea name="message" placeholder="Message" rows="5" required></textarea>
+
+				<label class="sr-only" for="contact-event-date">Event date</label>
+				<input id="contact-event-date" type="date" name="event_date" />
+
+				<label class="sr-only" for="contact-message">Tell us about your event</label>
+				<textarea id="contact-message" name="message" placeholder="Tell us about your event — venue, timings, the kind of night you want" rows="5" required></textarea>
+
 				<button class="button primary" type="submit">
 					<Icon name="send" />
 					Send Enquiry

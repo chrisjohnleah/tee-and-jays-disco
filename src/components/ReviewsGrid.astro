@@ -1,31 +1,74 @@
 ---
-import { testimonials } from '../data/site';
+import { business, testimonials } from '../data/site';
 import Icon from './Icon.astro';
 import SectionTitle from './SectionTitle.astro';
 
 interface Props {
 	limit?: number;
 	title?: string;
+	includeSchema?: boolean;
 }
 
-const { limit, title = 'What our clients say' } = Astro.props;
+const { limit, title = 'What our clients say', includeSchema = false } = Astro.props;
 const reviews = typeof limit === 'number' ? testimonials.slice(0, limit) : testimonials;
+
+const aggregateRatingSchema = includeSchema
+	? {
+			'@context': 'https://schema.org',
+			'@type': 'LocalBusiness',
+			'@id': `${business.url}/#business`,
+			name: business.name,
+			aggregateRating: {
+				'@type': 'AggregateRating',
+				ratingValue: (testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length).toFixed(1),
+				bestRating: 5,
+				worstRating: 1,
+				ratingCount: testimonials.length,
+				reviewCount: testimonials.length,
+			},
+			review: testimonials.map((t) => ({
+				'@type': 'Review',
+				reviewRating: {
+					'@type': 'Rating',
+					ratingValue: t.rating,
+					bestRating: 5,
+				},
+				author: { '@type': 'Person', name: t.name },
+				reviewBody: t.quote,
+				itemReviewed: {
+					'@type': 'Service',
+					name: `${t.eventType} DJ`,
+					provider: { '@type': 'LocalBusiness', '@id': `${business.url}/#business` },
+				},
+				locationCreated: { '@type': 'Place', name: t.location },
+			})),
+		}
+	: null;
 ---
 
 <section class="section reviews" id="reviews">
 	<SectionTitle title={title} compact />
 	<div class="review-grid">
 		{reviews.map((review) => (
-			<article class="review-card">
-				<div class="stars" aria-label="Five star review">
-					{Array.from({ length: 5 }).map(() => <Icon name="star" />)}
+			<article class="review-card" itemscope itemtype="https://schema.org/Review">
+				<meta itemprop="itemReviewed" content={business.name} />
+				<div class="stars" aria-label={`${review.rating} star review`} itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+					<meta itemprop="ratingValue" content={String(review.rating)} />
+					<meta itemprop="bestRating" content="5" />
+					{Array.from({ length: review.rating }).map(() => <Icon name="star" />)}
 				</div>
-				<blockquote>"{review.quote}"</blockquote>
-				<div class="review-person">
-					<img src={review.image} alt="" loading="lazy" />
-					<p><strong>{review.name}</strong><span>{review.location}</span></p>
+				<blockquote itemprop="reviewBody">"{review.quote}"</blockquote>
+				<div class="review-person" itemprop="author" itemscope itemtype="https://schema.org/Person">
+					<p>
+						<strong itemprop="name">{review.name}</strong>
+						<span>{review.eventType} · {review.location}</span>
+					</p>
 				</div>
 			</article>
 		))}
 	</div>
 </section>
+
+{aggregateRatingSchema && (
+	<script type="application/ld+json" set:html={JSON.stringify(aggregateRatingSchema)} />
+)}

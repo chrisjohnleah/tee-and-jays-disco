@@ -15,6 +15,7 @@
     "cf:dev": "astro build && wrangler dev --config wrangler.worker.jsonc"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.2",
     "astro": "^6.3.0"
   },
   "devDependencies": {
