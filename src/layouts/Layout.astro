@@ -12,7 +12,7 @@ interface Props {
 const {
 	title = 'TeeJays Disco | Mobile DJs in Tameside & Manchester',
 	description = 'Tony and John from TeeJays Disco provide professional mobile DJ services for weddings, birthdays, corporate events, and private parties across Tameside, Manchester, and the North West.',
-	image = '/images/newjohntony-hero-wide.jpg',
+	image = '/og-image.jpg',
 	noindex = false,
 } = Astro.props;
 
@@ -67,8 +67,15 @@ const localBusinessSchema = {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="color-scheme" content="dark" />
 		<meta name="theme-color" content="#020814" />
+
+		<!-- Icons -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<meta name="apple-mobile-web-app-title" content="TeeJays Disco" />
+		<meta name="application-name" content="TeeJays Disco" />
 		<link rel="canonical" href={canonical} />
 		{noindex && <meta name="robots" content="noindex,nofollow" />}
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -81,12 +88,16 @@ const localBusinessSchema = {
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={`${business.name} — Mobile DJs for weddings, birthdays and parties across Tameside and Manchester`} />
 		<meta property="og:site_name" content={business.name} />
 		<meta property="og:locale" content="en_GB" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={`${business.name} — Mobile DJs across Tameside and Manchester`} />
 		<title>{title}</title>
 		<script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
 		<slot name="head" />
