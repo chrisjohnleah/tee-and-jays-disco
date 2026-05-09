@@ -1824,3 +1824,115 @@ a:visited {
 		scroll-behavior: auto !important;
 	}
 }
+
+/* ---------- Microinteractions: subtle party-DJ energy ---------- */
+@media (prefers-reduced-motion: no-preference) {
+	/* 1. EQ waveform pulse in the logo wordmark — looks like real audio EQ */
+	@keyframes eq-bounce {
+		0%, 100% { transform: scaleY(1); }
+		50% { transform: scaleY(0.45); }
+	}
+
+	.waveform rect {
+		transform-origin: 50% 100%;
+		animation: eq-bounce 1.1s ease-in-out infinite;
+	}
+	.waveform rect:nth-child(1) { animation-delay: 0s;     animation-duration: 0.9s; }
+	.waveform rect:nth-child(2) { animation-delay: 0.15s;  animation-duration: 1.2s; }
+	.waveform rect:nth-child(3) { animation-delay: 0.3s;   animation-duration: 0.85s; }
+	.waveform rect:nth-child(4) { animation-delay: 0.45s;  animation-duration: 1.35s; }
+	.waveform rect:nth-child(5) { animation-delay: 0.6s;   animation-duration: 1s; }
+	.waveform rect:nth-child(6) { animation-delay: 0.45s;  animation-duration: 1.35s; }
+	.waveform rect:nth-child(7) { animation-delay: 0.3s;   animation-duration: 0.85s; }
+	.waveform rect:nth-child(8) { animation-delay: 0.15s;  animation-duration: 1.2s; }
+	.waveform rect:nth-child(9) { animation-delay: 0s;     animation-duration: 0.9s; }
+
+	/* 2. Hero gold word — subtle neon glow that breathes */
+	@keyframes neon-breathe {
+		0%, 100% {
+			text-shadow:
+				0 0 12px rgba(255, 214, 62, 0.35),
+				0 0 36px rgba(255, 214, 62, 0.15);
+		}
+		50% {
+			text-shadow:
+				0 0 18px rgba(255, 214, 62, 0.55),
+				0 0 60px rgba(255, 214, 62, 0.25);
+		}
+	}
+
+	.hero h1 span {
+		animation: neon-breathe 4s ease-in-out infinite;
+	}
+
+	/* 3. Service card — hover lift + icon disc spin */
+	.service-card {
+		transition: border-color 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	.service-card:hover,
+	.service-card:focus-visible {
+		transform: translateY(-4px);
+	}
+
+	.service-icon {
+		transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	.service-card:hover .service-icon,
+	.service-card:focus-visible .service-icon {
+		transform: rotate(360deg);
+	}
+
+	/* 4. Star sparkle cascade on review-card hover */
+	@keyframes star-pulse {
+		0%, 100% { transform: scale(1); }
+		50% { transform: scale(1.25); }
+	}
+
+	.review-card .stars svg {
+		display: inline-block;
+		transform-origin: center;
+		transition: filter 0.2s ease;
+	}
+
+	.review-card:hover .stars svg {
+		animation: star-pulse 0.45s ease-out 1;
+		filter: drop-shadow(0 0 4px rgba(255, 214, 62, 0.55));
+	}
+
+	.review-card:hover .stars svg:nth-child(1) { animation-delay: 0s; }
+	.review-card:hover .stars svg:nth-child(2) { animation-delay: 0.06s; }
+	.review-card:hover .stars svg:nth-child(3) { animation-delay: 0.12s; }
+	.review-card:hover .stars svg:nth-child(4) { animation-delay: 0.18s; }
+	.review-card:hover .stars svg:nth-child(5) { animation-delay: 0.24s; }
+
+	/* 5. Button shimmer — diagonal sheen sweep on primary buttons */
+	.button.primary {
+		position: relative;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.button.primary::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(
+			110deg,
+			transparent 30%,
+			rgba(255, 255, 255, 0.18) 45%,
+			rgba(255, 214, 62, 0.22) 50%,
+			rgba(255, 255, 255, 0.18) 55%,
+			transparent 70%
+		);
+		transform: translateX(-100%);
+		transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+	}
+
+	.button.primary:hover::before,
+	.button.primary:focus-visible::before {
+		transform: translateX(100%);
+	}
+}
