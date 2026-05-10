@@ -1,0 +1,28 @@
+---
+import { contact } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<section class="section home-cta" id="contact">
+	<div class="home-cta-panel">
+		<h2>Ready to book your DJ?</h2>
+		<p>Tell us your date, venue and the kind of night you want — we'll come back within 24 hours with availability and a quote.</p>
+
+		<div class="home-cta-actions">
+			<a class="button primary" href="/contact/">
+				<Icon name="calendar" />
+				Check Availability
+			</a>
+			<a class="button ghost" href={contact.phoneHref}>
+				<Icon name="phone" />
+				{contact.phone}
+			</a>
+		</div>
+
+		<p class="home-cta-meta">
+			<a href={contact.emailHref}>{contact.email}</a>
+			<span aria-hidden="true">·</span>
+			<span>{contact.location}</span>
+		</p>
+	</div>
+</section>

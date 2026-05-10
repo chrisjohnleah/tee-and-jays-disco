@@ -1,10 +1,10 @@
 ---
 import AboutArea from '../components/AboutArea.astro';
-import ContactBlock from '../components/ContactBlock.astro';
 import Footer from '../components/Footer.astro';
 import GalleryStrip from '../components/GalleryStrip.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import HomeCTA from '../components/HomeCTA.astro';
 import ReviewsGrid from '../components/ReviewsGrid.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ServiceCard from '../components/ServiceCard.astro';
@@ -32,9 +32,9 @@ export const prerender = true;
 		</section>
 
 		<AboutArea />
-		<ReviewsGrid />
+		<ReviewsGrid limit={3} />
 		<GalleryStrip />
-		<ContactBlock />
+		<HomeCTA />
 		<Footer />
 	</main>
 </Layout>

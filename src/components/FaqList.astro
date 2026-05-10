@@ -7,7 +7,7 @@ interface Props {
 	showAnswers?: boolean;
 }
 
-const { showAnswers = false } = Astro.props;
+const { showAnswers = true } = Astro.props;
 ---
 
 <div class="faq" id="faq">
@@ -16,7 +16,7 @@ const { showAnswers = false } = Astro.props;
 		{faqs.map((faq) => (
 			<details {...(showAnswers ? { open: true } : {})}>
 				<summary>{faq.question}<span><Icon name="plus" /></span></summary>
-				{showAnswers && <p>{faq.answer}</p>}
+				<p>{faq.answer}</p>
 			</details>
 		))}
 	</div>
