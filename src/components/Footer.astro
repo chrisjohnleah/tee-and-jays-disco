@@ -22,8 +22,8 @@ const year = new Date().getFullYear();
 	<div class="footer-col">
 		<h3>Areas Covered</h3>
 		<a href="/areas/">All areas</a>
-		{areas.map((area) => <a href={`/areas/${area.slug}/`}>{area.name}</a>)}
-		<a href="/contact/">+ surrounding areas</a>
+		{areas.filter((area) => area.featured).map((area) => <a href={`/areas/${area.slug}/`}>{area.name}</a>)}
+		<a href="/areas/">+ {areas.filter((area) => !area.featured).length} more areas</a>
 	</div>
 
 	<div class="footer-col">

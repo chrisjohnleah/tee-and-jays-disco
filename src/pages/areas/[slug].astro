@@ -105,13 +105,17 @@ const serviceSchema = {
 			<SectionTitle title="Other areas we cover" subtitle="Based in Tameside, regularly travelling across Greater Manchester and the North West." />
 			<div class="area-link-grid">
 				{areas
-					.filter((a) => a.slug !== area.slug)
+					.filter((a) => a.slug !== area.slug && a.featured)
 					.map((a) => (
 						<a class="area-link-card" href={`/areas/${a.slug}/`}>
 							<Icon name="pin" />
 							<span>{a.name}</span>
 						</a>
 					))}
+				<a class="area-link-card" href="/areas/">
+					<Icon name="plus" />
+					<span>View all areas</span>
+				</a>
 			</div>
 		</section>
 

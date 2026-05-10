@@ -75,12 +75,16 @@ const serviceSchema = {
 		<section class="section">
 			<SectionTitle title={`${service.title} DJ hire across Greater Manchester`} subtitle={`Local ${service.title.toLowerCase()} DJs in the area you need.`} />
 			<div class="area-link-grid">
-				{areas.map((area) => (
+				{areas.filter((area) => area.featured).map((area) => (
 					<a class="area-link-card" href={`/areas/${area.slug}/`}>
 						<Icon name="pin" />
 						<span>{service.title} DJ in {area.name}</span>
 					</a>
 				))}
+				<a class="area-link-card" href="/areas/">
+					<Icon name="plus" />
+					<span>View all areas</span>
+				</a>
 			</div>
 		</section>
 

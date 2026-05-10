@@ -38,7 +38,7 @@ import Icon from './Icon.astro';
 			</div>
 			<div class="area-list">
 				<p>We regularly provide DJ services in:</p>
-				{areas.map((area) => <a href={`/areas/${area.slug}/`}>{area.name}</a>)}
+				{areas.filter((area) => area.featured).map((area) => <a href={`/areas/${area.slug}/`}>{area.name}</a>)}
 				<small>and surrounding areas</small>
 				<p>Travel further afield? Just ask!</p>
 			</div>
