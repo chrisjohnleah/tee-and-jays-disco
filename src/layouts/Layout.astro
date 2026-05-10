@@ -110,6 +110,15 @@ const localBusinessSchema = {
 			})(window, document, "clarity", "script", "woyhaglm4f");
 		</script>
 
+		<!-- Google tag (gtag.js) — GA4 -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-6SZL0DGHBX"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-6SZL0DGHBX');
+		</script>
+
 		<slot name="head" />
 	</head>
 	<body>

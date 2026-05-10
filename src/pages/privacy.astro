@@ -1,4 +1,5 @@
 ---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import PageHero from '../components/PageHero.astro';
@@ -8,24 +9,59 @@ export const prerender = true;
 ---
 
 <Layout title="Privacy Policy | TeeJays Disco" description="How TeeJays Disco collects, uses and protects your personal data when you make an enquiry, book an event or use this website.">
-  <main class="page">
-    <Header />
-    <PageHero title="Privacy Policy" subtitle="How TeeJays Disco handles enquiry details and booking information." />
-    <section class="section">
-      <article class="content-card legal-card">
-        <h2>Privacy Policy</h2>
-        <p>
-          When you contact TeeJays Disco, we use the information you provide to respond to your enquiry, check availability and manage your booking.
-          This may include your name, contact details, event date, venue and event requirements.
-        </p>
-        <p>
-          We do not sell personal information. We only keep booking information for as long as needed to provide our services, handle records and respond to follow-up questions.
-        </p>
-        <p>
-          To ask about your information, email <a href="mailto:info@teejaysdisco.co.uk">info@teejaysdisco.co.uk</a>.
-        </p>
-      </article>
-    </section>
-    <Footer />
-  </main>
+	<main class="page">
+		<Header />
+		<PageHero title="Privacy Policy" subtitle="How TeeJays Disco handles enquiry details and booking information." />
+		<section class="section">
+			<article class="content-card legal-card">
+				<Breadcrumbs items={[{ label: 'Privacy Policy' }]} />
+				<h2>Privacy Policy</h2>
+
+				<h3>What we collect when you contact us</h3>
+				<p>
+					When you contact TeeJays Disco, we use the information you provide to respond to your enquiry, check availability and manage your booking.
+					This may include your name, contact details, event date, venue and event requirements.
+				</p>
+				<p>
+					We do not sell personal information. We only keep booking information for as long as needed to provide our services, handle records and respond to follow-up questions.
+				</p>
+
+				<h3>Analytics on this website</h3>
+				<p>
+					We use two analytics services to understand how visitors find and use this website. Both are used in
+					their default, anonymised configurations — no personally identifiable information is collected.
+				</p>
+				<ul>
+					<li>
+						<strong>Microsoft Clarity</strong> — collects anonymised heatmaps and session recordings to help us
+						see which pages and content are useful. See <a href="https://privacy.microsoft.com/en-gb/privacystatement" rel="noopener noreferrer" target="_blank">Microsoft's privacy statement</a>.
+					</li>
+					<li>
+						<strong>Google Analytics 4 (GA4)</strong> — measures aggregated visitor numbers, traffic sources and
+						the pages people read. See <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">Google's privacy policy</a>.
+					</li>
+				</ul>
+				<p>
+					You can opt out of analytics by enabling your browser's "Do Not Track" setting, using a content blocker,
+					or visiting Google's <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener noreferrer" target="_blank">opt-out tool</a>.
+				</p>
+
+				<h3>Cookies</h3>
+				<p>
+					This site uses a small number of strictly necessary cookies to remember preferences and run the website.
+					Analytics services may set additional cookies in your browser as described above.
+				</p>
+
+				<h3>Your rights</h3>
+				<p>
+					Under UK GDPR you can request a copy of any personal data we hold about you, ask us to correct or delete it,
+					or object to the way we use it.
+				</p>
+				<p>
+					To exercise any of these rights or ask any privacy question, email <a href="mailto:info@teejaysdisco.co.uk">info@teejaysdisco.co.uk</a>.
+				</p>
+			</article>
+		</section>
+		<Footer />
+	</main>
 </Layout>
