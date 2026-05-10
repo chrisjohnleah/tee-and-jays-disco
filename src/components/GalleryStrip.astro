@@ -4,17 +4,39 @@ import SectionTitle from './SectionTitle.astro';
 
 interface Props {
 	limit?: number;
-	full?: boolean;
 }
 
-const { limit = 6, full = false } = Astro.props;
-const images = full ? gallery : gallery.slice(0, limit);
+const { limit = 6 } = Astro.props;
+
+// Diverse sample: one from each category in turn until we hit the limit
+const seenCategories = new Set<string>();
+const diversePicks = [] as typeof gallery;
+
+for (const item of gallery) {
+	if (!seenCategories.has(item.category)) {
+		diversePicks.push(item);
+		seenCategories.add(item.category);
+	}
+	if (diversePicks.length >= limit) break;
+}
+
+// If we still have room (fewer categories than limit), top up from remaining
+if (diversePicks.length < limit) {
+	for (const item of gallery) {
+		if (!diversePicks.includes(item)) {
+			diversePicks.push(item);
+			if (diversePicks.length >= limit) break;
+		}
+	}
+}
+
+const images = diversePicks;
 ---
 
-<section class:list={['gallery', full && 'gallery-full']} id="gallery">
-	<SectionTitle title="Gallery" compact />
+<section class="gallery" id="gallery">
+	<SectionTitle title="Gallery" subtitle="A glimpse from weddings, parties and events across Greater Manchester." compact />
 	<div class="gallery-row">
 		{images.map((image) => <img src={image.src} alt={image.alt} width="900" height="600" loading="lazy" decoding="async" />)}
 	</div>
-	{!full && <p>More photos on our <a href="/gallery/">Gallery</a> page.</p>}
+	<p>See the full gallery — <a href="/gallery/">filter by event type</a>.</p>
 </section>

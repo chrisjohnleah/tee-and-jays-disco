@@ -226,16 +226,63 @@ export const testimonials = [
 	},
 ];
 
-export const gallery = [
-	{ src: '/images/gallery/dancefloor-lights.jpg', alt: 'Packed dancefloor under DJ stage lighting at a TeeJays Disco party night' },
-	{ src: '/images/gallery/birthday-celebration.jpg', alt: 'Birthday party guests dancing to TeeJays Disco in Tameside' },
-	{ src: '/images/gallery/wedding-reception.jpg', alt: 'Wedding reception with the bride and groom on the dancefloor' },
-	{ src: '/images/gallery/dj-decks.jpg', alt: 'Tony at the DJ decks reading the room at a private function' },
-	{ src: '/images/gallery/club-night.jpg', alt: 'Lively club night crowd dancing to a TeeJays set' },
-	{ src: '/images/gallery/school-disco.jpg', alt: 'Children enjoying a TeeJays Disco school disco event' },
-	{ src: '/images/gallery/dj-setup.jpg', alt: 'TeeJays Disco professional sound and lighting setup at a venue' },
-	{ src: '/images/gallery/anniversary-party.jpg', alt: 'Couple dancing at an anniversary celebration with TeeJays Disco' },
-	{ src: '/images/gallery/party-crowd.jpg', alt: 'Party crowd cheering as the DJ drops a favourite track' },
+export const galleryCategories = [
+	{ id: 'all', label: 'All' },
+	{ id: 'weddings', label: 'Weddings' },
+	{ id: 'birthdays', label: 'Birthdays' },
+	{ id: 'anniversaries', label: 'Anniversaries' },
+	{ id: 'corporate', label: 'Corporate' },
+	{ id: 'pub-club', label: 'Pub & Club' },
+	{ id: 'school', label: 'School Discos' },
+	{ id: 'community', label: 'Community' },
+	{ id: 'setup', label: 'Setup & Decks' },
+] as const;
+
+type GalleryCategory = Exclude<(typeof galleryCategories)[number]['id'], 'all'>;
+
+export const gallery: { src: string; alt: string; category: GalleryCategory }[] = [
+	// Weddings
+	{ src: '/images/gallery/wedding-reception.jpg', alt: 'Wedding reception with the bride and groom on the dancefloor', category: 'weddings' },
+	{ src: '/images/gallery/wedding-newlyweds-dance.jpg', alt: 'Newlyweds during the first dance at the wedding reception', category: 'weddings' },
+	{ src: '/images/gallery/dance-crowd.jpg', alt: 'Wedding guests filling the dancefloor at a TeeJays Disco set', category: 'weddings' },
+	{ src: '/images/gallery/dancefloor-lights.jpg', alt: 'Packed wedding dancefloor under coloured DJ stage lighting', category: 'weddings' },
+
+	// Birthdays
+	{ src: '/images/gallery/birthday-cake-friends.jpg', alt: 'Birthday celebration with friends and a candle-lit cake', category: 'birthdays' },
+	{ src: '/images/gallery/birthday-family.jpg', alt: 'Family celebrating a milestone birthday party with TeeJays Disco', category: 'birthdays' },
+	{ src: '/images/gallery/birthday-friends.jpg', alt: 'Friends raising a toast at a joyful birthday celebration', category: 'birthdays' },
+	{ src: '/images/gallery/birthday-celebration.jpg', alt: 'Birthday party guests dancing to TeeJays Disco in Tameside', category: 'birthdays' },
+	{ src: '/images/gallery/party-crowd.jpg', alt: 'Birthday crowd cheering as the DJ drops a favourite track', category: 'birthdays' },
+
+	// Anniversaries
+	{ src: '/images/gallery/anniversary-elderly-dance.jpg', alt: 'Elderly couple dancing together at an anniversary celebration', category: 'anniversaries' },
+	{ src: '/images/gallery/anniversary-party.jpg', alt: 'Couple dancing at an anniversary celebration with TeeJays Disco', category: 'anniversaries' },
+
+	// Corporate
+	{ src: '/images/gallery/corporate-event.jpg', alt: 'Corporate event with attendees enjoying a professional evening function', category: 'corporate' },
+	{ src: '/images/gallery/corporate-businessman.jpg', alt: 'Business attendees at a TeeJays Disco corporate party', category: 'corporate' },
+
+	// Pub & Club Nights
+	{ src: '/images/gallery/club-night.jpg', alt: 'Lively pub and club night crowd dancing to a TeeJays Disco set', category: 'pub-club' },
+	{ src: '/images/gallery/disco-laser-lights.jpg', alt: 'Vibrant disco party with laser lights and dancing crowd', category: 'pub-club' },
+	{ src: '/images/gallery/club-rave-crowd.jpg', alt: 'Crowd of people dancing at a high-energy club night', category: 'pub-club' },
+	{ src: '/images/gallery/club-dancing.jpg', alt: 'People dancing inside a venue at a TeeJays Disco party night', category: 'pub-club' },
+	{ src: '/images/gallery/disco-bar.jpg', alt: 'People dancing at a disco bar with mood lighting', category: 'pub-club' },
+	{ src: '/images/gallery/disco-women.jpg', alt: 'Group enjoying themselves on a busy disco dancefloor', category: 'pub-club' },
+
+	// School Discos
+	{ src: '/images/gallery/school-disco.jpg', alt: 'Children enjoying a TeeJays Disco school disco event', category: 'school' },
+
+	// Community
+	{ src: '/images/gallery/festival-crowd.jpg', alt: 'Community festival crowd enjoying outdoor entertainment', category: 'community' },
+	{ src: '/images/gallery/festival-stage.jpg', alt: 'Community event stage with attendees enjoying live entertainment', category: 'community' },
+
+	// Setup & Decks
+	{ src: '/images/gallery/dj-setup.jpg', alt: 'TeeJays Disco professional sound and lighting setup at a venue', category: 'setup' },
+	{ src: '/images/gallery/dj-decks.jpg', alt: 'Tony at the DJ decks reading the room at a private function', category: 'setup' },
+	{ src: '/images/gallery/dj-board-lit.jpg', alt: 'Illuminated DJ controller with vibrant LED pads at a party', category: 'setup' },
+	{ src: '/images/gallery/dj-mixer-closeup.jpg', alt: 'DJ mixer console under colourful neon party lights', category: 'setup' },
+	{ src: '/images/gallery/dj-mixer-blue.jpg', alt: 'DJ playing a mixer with blue stage lighting', category: 'setup' },
 ];
 
 export const faqs = [

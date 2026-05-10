@@ -1,23 +1,86 @@
 ---
-import ContactBlock from '../components/ContactBlock.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Footer from '../components/Footer.astro';
-import GalleryStrip from '../components/GalleryStrip.astro';
 import Header from '../components/Header.astro';
+import HomeCTA from '../components/HomeCTA.astro';
 import PageHero from '../components/PageHero.astro';
 import Layout from '../layouts/Layout.astro';
+import { gallery, galleryCategories } from '../data/site';
 
 export const prerender = true;
 ---
 
-<Layout title="Gallery | TeeJays Disco" description="See TeeJays Disco event photos from weddings, birthdays, corporate parties and community events.">
-  <main class="page">
-    <Header />
-    <PageHero
-      title="Lights, dancefloors and proper party moments"
-      subtitle="A look at the kind of nights TeeJays Disco helps create across Tameside, Manchester and the North West."
-    />
-    <GalleryStrip full />
-    <ContactBlock faq={false} />
-    <Footer />
-  </main>
+<Layout
+	title="Gallery | TeeJays Disco — Wedding, Party & Event Photos"
+	description="Wedding, birthday, anniversary, corporate, school disco, pub night and community event photos from TeeJays Disco across Tameside, Manchester and the North West."
+>
+	<main class="page">
+		<Header />
+		<PageHero
+			title="Lights, dancefloors and proper party moments"
+			subtitle="A look at the kind of nights TeeJays Disco helps create across Tameside, Manchester and the North West."
+		/>
+
+		<section class="section gallery-page">
+			<Breadcrumbs items={[{ label: 'Gallery' }]} />
+
+			<div class="gallery-tabs" role="tablist" aria-label="Filter gallery by event type">
+				{galleryCategories.map((cat, index) => (
+					<button
+						type="button"
+						role="tab"
+						class:list={['gallery-tab', index === 0 && 'is-active']}
+						aria-selected={index === 0 ? 'true' : 'false'}
+						data-filter={cat.id}
+					>
+						{cat.label}
+					</button>
+				))}
+			</div>
+
+			<div class="gallery-masonry" data-gallery>
+				{gallery.map((item) => (
+					<figure class="gallery-item" data-category={item.category}>
+						<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+					</figure>
+				))}
+			</div>
+
+			<p class="gallery-empty" data-empty hidden>
+				No photos in this category yet — check back soon, or <a href="/contact/">get in touch</a> if you'd like a similar event covered.
+			</p>
+		</section>
+
+		<HomeCTA />
+		<Footer />
+	</main>
 </Layout>
+
+<script>
+	const tabs = document.querySelectorAll<HTMLButtonElement>('.gallery-tab');
+	const items = document.querySelectorAll<HTMLElement>('.gallery-item');
+	const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+	tabs.forEach((tab) => {
+		tab.addEventListener('click', () => {
+			const filter = tab.dataset.filter ?? 'all';
+
+			tabs.forEach((t) => {
+				const active = t === tab;
+				t.classList.toggle('is-active', active);
+				t.setAttribute('aria-selected', String(active));
+			});
+
+			let visibleCount = 0;
+			items.forEach((item) => {
+				const matches = filter === 'all' || item.dataset.category === filter;
+				item.classList.toggle('is-hidden', !matches);
+				if (matches) visibleCount++;
+			});
+
+			if (empty) {
+				empty.hidden = visibleCount > 0;
+			}
+		});
+	});
+</script>
