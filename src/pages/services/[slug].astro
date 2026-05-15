@@ -7,7 +7,7 @@ import Icon from '../../components/Icon.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
 import Layout from '../../layouts/Layout.astro';
-import { areas, business, services } from '../../data/site';
+import { areas, business, contact, localIntelligence, services } from '../../data/site';
 
 export const prerender = true;
 
@@ -19,6 +19,23 @@ const { slug } = Astro.params;
 const service = services.find((item) => item.slug === slug)!;
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? business.url;
+
+// === Rich area cards powered by localIntelligence (shared with the new djs hubs) ===
+// This turns the services/[slug] page into a strong conversion hub that funnels users into the location-specific pages.
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
 
 const serviceSchema = {
 	'@context': 'https://schema.org',
@@ -51,7 +68,16 @@ const serviceSchema = {
 			<Breadcrumbs items={[{ label: 'Services', href: '/services/' }, { label: service.title }]} />
 
 			<div class="detail-layout">
-				<img class="detail-image" src={service.image} alt={`${service.title} DJ event with TeeJays Disco`} width="1200" height="800" loading="lazy" decoding="async" />
+				<img 
+					class="detail-image" 
+					src={service.image} 
+					alt={`${service.title} DJs at a premium TeeJays Disco event — professional sound, lighting and unforgettable atmosphere`} 
+					width="1200" 
+					height="800" 
+					loading="lazy" 
+					decoding="async" 
+					sizes="(min-width: 1024px) 45vw, 100vw"
+				/>
 				<div class="detail-copy">
 					<h2>{service.title}</h2>
 					<p>{service.intro}</p>
@@ -61,30 +87,68 @@ const serviceSchema = {
 						))}
 					</ul>
 					<p>
-						Tell us your date, venue and the kind of night you want. We will confirm what is practical,
-						what setup is needed and whether the date is available.
+						We know the real venues in your town — the loading bays, power points, acoustics, curfews and what actually gets the floor moving there. 
+						Tell us your date, venue and the kind of night you want. The best dates for {service.title.toLowerCase()} across Tameside, Stockport, Oldham and Manchester are already booking 6–12 months ahead.
 					</p>
-					<a class="button primary" href="/contact/">
-						<Icon name="calendar" />
-						Check Availability
-					</a>
+					<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+						<a class="button primary" href="/contact/">
+							<Icon name="calendar" />
+							Check Availability
+						</a>
+						<a class="button ghost" href="#local-areas">
+							<Icon name="pin" />
+							Browse {service.title} DJs by Town
+						</a>
+					</div>
 				</div>
 			</div>
 		</section>
 
-		<section class="section">
-			<SectionTitle title={`${service.title} DJ hire across Greater Manchester`} subtitle={`Local ${service.title.toLowerCase()} DJs in the area you need.`} />
-			<div class="area-link-grid">
-				{areas.filter((area) => area.featured).map((area) => (
-					<a class="area-link-card" href={`/areas/${area.slug}/`}>
-						<Icon name="pin" />
-						<span>{service.title} DJ in {area.name}</span>
+		<section class="section" id="local-areas">
+			<SectionTitle 
+				title={`${service.title} DJs in 8 Priority Towns`} 
+				subtitle={`Real local venue intelligence from 50+ rooms we've actually played. Every area page details the exact power points, loading quirks, curfews, crowd vibes and music that fills floors in that town. Popular ${service.title.toLowerCase()} dates in Tameside, Stockport & Manchester are booking 6–12 months ahead.`} 
+			/>
+			<div class="area-list-grid">
+				{areaCards.map((card) => (
+					<a class="area-list-card" href={`/${service.djsHub}/${card.slug}/`}>
+						<div class="area-list-icon"><Icon name={service.icon} /></div>
+						<h3>{service.title} DJs in {card.name}</h3>
+						<p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+						{card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+						<span class="area-list-cta">See local venues, music &amp; stories →</span>
 					</a>
 				))}
-				<a class="area-link-card" href="/areas/">
+			</div>
+			<p style="text-align: center; margin-top: var(--space-6);">
+				<a class="button ghost" href={`/${service.djsHub}/`}>
 					<Icon name="plus" />
-					<span>View all areas</span>
+					View the full {service.title} DJs hub — all areas, deeper local insights &amp; availability
 				</a>
+			</p>
+		</section>
+
+		<!-- Strong final conversion hub CTA with urgency + phone option — pushes immediate action after exploring the location pages -->
+		<section class="section">
+			<div class="content-card" style="text-align: center; background: var(--ink); color: var(--paper); border-color: var(--pink);">
+				<h2 style="color: var(--paper); margin-bottom: 0.5rem;">Ready to book {service.title} DJs who actually know your venues?</h2>
+				<p style="font-size: 1.05rem; margin-bottom: 0.75rem; opacity: 0.95;">
+					Tony &amp; John — 35+ years experience each. Local to Tameside, trusted across Greater Manchester and the North West.
+				</p>
+				<p style="margin-bottom: 1.25rem; font-weight: 600; color: var(--lime);">
+					Popular {service.title.toLowerCase()} weekends in our 8 priority areas are filling 6–12 months in advance. Secure your date before the best venues and slots go.
+				</p>
+				<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+					<a class="button primary" href="/contact/" style="font-size: 1.05rem; padding: 0.75rem 1.75rem;">
+						<Icon name="calendar" />
+						Check Availability &amp; Get Quote
+					</a>
+					<a class="button ghost" href={contact.phoneHref} style="font-size: 1.05rem; padding: 0.75rem 1.75rem; border-color: var(--paper); color: var(--paper);">
+						<Icon name="phone" />
+						Call {contact.phone}
+					</a>
+				</div>
+				<p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.85;">Fastest way to lock in your date — call or message us now. No obligation quote.</p>
 			</div>
 		</section>
 

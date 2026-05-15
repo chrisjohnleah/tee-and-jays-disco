@@ -1,0 +1,165 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
+---
+
+<Layout
+  title="Corporate Event DJs across Tameside, Manchester & the North West | TeeJays Disco"
+  description="Professional corporate DJs in Tameside, Stockport, Oldham & Manchester for staff parties, Christmas dos, awards & galas. Punctual, polished and proven across 50+ local venues. Get your quote."
+>
+  <main class="page">
+    <Header />
+
+    <!-- Prominent phone CTA bar for mobile conversion on corporate hub -->
+    <div class="top-phone-cta">
+      <div class="top-phone-inner">
+        <span class="top-phone-label">Professional corporate event DJs across Tameside, Stockport & Greater Manchester — call now</span>
+        <a class="top-phone-link" href={contact.phoneHref}>
+          <Icon name="phone" /> <strong>{contact.phone}</strong>
+        </a>
+        <a class="top-phone-link whatsapp" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" /> WhatsApp Tony &amp; John
+        </a>
+        <span class="top-phone-urgency">Corporate dates (Christmas, awards) book 5–8 months ahead — secure your local DJs</span>
+      </div>
+    </div>
+
+    <PageHero
+      title="Corporate Event DJs you can trust"
+      subtitle="Tony & John — 35+ years each. Professional, punctual, and able to read a room full of colleagues."
+      image="/images/services/corporate/corporate-black-tie-gala-smiling-35327677.jpg"
+      imageAlt="Professionals in black tie smiling and networking at an elegant corporate gala event with TeeJays Disco"
+      ctas={[
+        { label: 'Check corporate availability', href: '/contact/', icon: 'calendar', variant: 'primary' },
+        { label: `Call Tony & John: ${contact.phone}`, href: contact.phoneHref, icon: 'phone', variant: 'ghost' },
+        { label: 'WhatsApp us now', href: contact.whatsappHref, icon: 'whatsapp', variant: 'whatsapp' },
+      ]}
+    />
+
+    <StatStrip />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Corporate DJs' }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Corporate DJs who keep it professional — then make it a proper party</h2>
+          <p>
+            Staff parties, Christmas dos, awards nights and client events need a DJ who understands the shift from networking to dancefloor. We keep things polished and appropriate early, then open it up so colleagues actually let their hair down — without ever crossing the line.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>Reliable, punctual, well-presented and fully insured</li>
+            <li><span><Icon name="check" /></span>Background-to-party transition done smoothly and professionally</li>
+            <li><span><Icon name="check" /></span>Clear pre-event communication with organisers and venues</li>
+            <li><span><Icon name="check" /></span>Proven with Christmas parties, awards, team building &amp; gala nights</li>
+          </ul>
+          <p style="margin-top: var(--space-4);">
+            <a href="#contact" class="button primary">Check corporate availability</a>
+            <a href={contact.phoneHref} class="button ghost" style="margin-left: 12px;">Call {contact.phone}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="Corporate DJs in 8 priority towns" subtitle="Real venue & crowd intelligence for professional events. Every area page details the halls, hotels and function rooms that work for corporate nights locally." />
+
+      <div class="area-list-grid">
+        {areaCards.map((card) => (
+          <a class="area-list-card" href={`/corporate-djs/${card.slug}/`}>
+            <div class="area-list-icon"><Icon name="briefcase" /></div>
+            <h3>Corporate DJs in {card.name}</h3>
+            <p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+            {card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+            <span class="area-list-cta">See venues &amp; approach →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="How we run corporate events differently" subtitle="Professional presence that still delivers a proper party atmosphere." />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Pre-event planning &amp; communication</h2>
+          <p>We speak to organisers and often the venue in advance. We confirm timings, dress code expectations, any speeches or presentations, and exactly how the transition from formal to fun should feel for that specific company culture.</p>
+        </div>
+        <div class="content-card">
+          <h2>Smooth formal-to-party flow</h2>
+          <p>We read the room and know when the moment is right to lift the energy. Background music stays tasteful, then we open the floor without ever making colleagues feel awkward or unprofessional.</p>
+        </div>
+        <div class="content-card">
+          <h2>Reliability that organisers trust</h2>
+          <p>Punctual arrival, smart presentation, clear contracts and no surprises. We’ve done hundreds of Christmas parties, awards nights and team celebrations across Greater Manchester venues — organisers book us again because we deliver.</p>
+        </div>
+      </div>
+    </section>
+
+    <ReviewsGrid limit={3} title="What organisers say about our corporate DJs" />
+
+    <section class="section">
+      <SectionTitle title="Other celebrations we cover with the same professionalism" subtitle="Reliable, experienced DJs for staff parties, awards, weddings, birthdays and community events." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href="/wedding-djs/">
+          <Icon name="rings" />
+          <span>Wedding DJs</span>
+        </a>
+        <a class="area-link-card" href="/birthday-party-djs/">
+          <Icon name="cake" />
+          <span>Birthday Party DJs</span>
+        </a>
+        <a class="area-link-card" href="/anniversary-djs/">
+          <Icon name="heart" />
+          <span>Anniversary DJs</span>
+        </a>
+        <a class="area-link-card" href="/school-disco-djs/">
+          <Icon name="graduate" />
+          <span>School Disco DJs</span>
+        </a>
+        <a class="area-link-card" href="/pub-club-djs/">
+          <Icon name="music" />
+          <span>Pub &amp; Club Night DJs</span>
+        </a>
+        <a class="area-link-card" href="/community-djs/">
+          <Icon name="group" />
+          <span>Community Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/areas/">
+          <Icon name="pin" />
+          <span>Browse all areas we cover</span>
+        </a>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} defaultEventType="Corporate Event" />
+    <Footer />
+  </main>
+</Layout>

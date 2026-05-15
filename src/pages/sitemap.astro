@@ -5,9 +5,20 @@ import Header from '../components/Header.astro';
 import PageHero from '../components/PageHero.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import Layout from '../layouts/Layout.astro';
-import { areas, services } from '../data/site';
+import { areas, localIntelligence, services } from '../data/site';
 
 export const prerender = true;
+
+const supportedAreas = areas.filter((area) => Object.keys(localIntelligence).includes(area.slug));
+const localEventHubs = [
+	{ label: 'Wedding DJs', href: '/wedding-djs/' },
+	{ label: 'Birthday Party DJs', href: '/birthday-party-djs/' },
+	{ label: 'Anniversary DJs', href: '/anniversary-djs/' },
+	{ label: 'Corporate DJs', href: '/corporate-djs/' },
+	{ label: 'School Disco DJs', href: '/school-disco-djs/' },
+	{ label: 'Pub & Club DJs', href: '/pub-club-djs/' },
+	{ label: 'Community DJs', href: '/community-djs/' },
+];
 ---
 
 <Layout
@@ -35,11 +46,47 @@ export const prerender = true;
 				</div>
 
 				<div class="sitemap-col">
-					<h2>Services</h2>
+					<h2>Event Pages</h2>
+					<ul>
+						{localEventHubs.map((hub) => (
+							<li><a href={hub.href}>{hub.label}</a></li>
+						))}
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Service Guides</h2>
 					<ul>
 						<li><a href="/services/">All Services</a></li>
 						{services.map((service) => (
 							<li><a href={`/services/${service.slug}/`}>{service.title}</a></li>
+						))}
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Local Wedding DJ Pages</h2>
+					<ul>
+						{supportedAreas.map((area) => (
+							<li><a href={`/wedding-djs/${area.slug}/`}>Wedding DJs in {area.name}</a></li>
+						))}
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Local Birthday Party Pages</h2>
+					<ul>
+						{supportedAreas.map((area) => (
+							<li><a href={`/birthday-party-djs/${area.slug}/`}>Birthday Party DJs in {area.name}</a></li>
+						))}
+					</ul>
+				</div>
+
+				<div class="sitemap-col">
+					<h2>Local Corporate DJ Pages</h2>
+					<ul>
+						{supportedAreas.map((area) => (
+							<li><a href={`/corporate-djs/${area.slug}/`}>Corporate DJs in {area.name}</a></li>
 						))}
 					</ul>
 				</div>

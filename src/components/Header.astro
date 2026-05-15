@@ -28,7 +28,7 @@ const isActive = (href: string) => {
 						{item.label}
 						<span class="down" aria-hidden="true"></span>
 					</a>
-					<div class="dropdown" role="menu">
+					<div class:list={['dropdown', (item.label === 'Services' || item.label === 'Areas') && 'dropdown--grid']} role="menu">
 						<a class="dropdown-overview" href={item.href} role="menuitem">
 							All {item.label} →
 						</a>
@@ -63,7 +63,7 @@ const isActive = (href: string) => {
 		menu?.classList.toggle('is-open', !isOpen);
 	});
 
-	menu?.querySelectorAll('a:not(.dropdown-overview)').forEach((link) => {
+	menu?.querySelectorAll<HTMLAnchorElement>('a:not([data-dropdown-toggle])').forEach((link) => {
 		link.addEventListener('click', () => {
 			menuButton?.setAttribute('aria-expanded', 'false');
 			menu.classList.remove('is-open');
@@ -75,7 +75,7 @@ const isActive = (href: string) => {
 	dropdowns.forEach((wrapper) => {
 		const toggle = wrapper.querySelector<HTMLAnchorElement>('[data-dropdown-toggle]');
 		toggle?.addEventListener('click', (event) => {
-			if (window.matchMedia('(max-width: 960px)').matches) {
+			if (window.matchMedia('(max-width: 1120px)').matches) {
 				event.preventDefault();
 				const isOpen = wrapper.classList.toggle('is-open');
 				toggle.setAttribute('aria-expanded', String(isOpen));

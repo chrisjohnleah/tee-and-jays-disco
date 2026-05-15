@@ -1,0 +1,519 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import StatStrip from '../../components/StatStrip.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  const supportedAreas = Object.keys(localIntelligence);
+  return areas
+    .filter((a) => supportedAreas.includes(a.slug))
+    .map((area) => ({ params: { slug: area.slug } }));
+}
+
+const { slug } = Astro.params;
+const area = areas.find((a) => a.slug === slug)!;
+const intel = localIntelligence[slug];
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? business.url;
+
+// === NEW: Area-specific hero images using the new Pexels corporate events photography collection ===
+// Each of the 8 pages gets a distinct, high-quality visual to boost engagement & uniqueness
+const corporateHeroImages: Record<string, { src: string; alt: string }> = {
+  'tameside': {
+    src: '/images/services/corporate/corporate-black-tie-gala-smiling-35327677.jpg',
+    alt: `Smiling professionals in black tie at a high-end Tameside corporate gala — polished and energetic with TeeJays`
+  },
+  'ashton-under-lyne': {
+    src: '/images/services/corporate/corporate-professionals-toast-wine-6762296.jpg',
+    alt: `Colleagues toasting with wine at a relaxed corporate networking event in Ashton-under-Lyne`
+  },
+  'hyde': {
+    src: '/images/services/corporate/corporate-professionals-toast-wine-6762296.jpg',
+    alt: `Professional team enjoying a celebratory toast at a Hyde corporate function`
+  },
+  'stalybridge': {
+    src: '/images/services/corporate/corporate-professionals-toast-wine-6762296.jpg',
+    alt: `Business colleagues raising a glass at a friendly Stalybridge awards or team night`
+  },
+  'stockport': {
+    src: '/images/services/corporate/corporate-black-tie-gala-smiling-35327677.jpg',
+    alt: `Elegant black-tie corporate gala with smiling guests in Stockport — sophisticated event entertainment`
+  },
+  'oldham': {
+    src: '/images/services/corporate/corporate-professionals-toast-wine-6762296.jpg',
+    alt: `Professionals networking and toasting at a corporate event in Oldham`
+  },
+  'manchester': {
+    src: '/images/services/corporate/corporate-black-tie-gala-smiling-35327677.jpg',
+    alt: `Stylish corporate gala in Manchester city with happy professionals in formal attire`
+  },
+  'altrincham': {
+    src: '/images/services/corporate/corporate-black-tie-gala-smiling-35327677.jpg',
+    alt: `Premium black-tie corporate celebration in affluent Altrincham — refined and memorable`
+  },
+};
+const heroImage = corporateHeroImages[slug] || { 
+  src: '/images/services/corporate/corporate-black-tie-gala-smiling-35327677.jpg', 
+  alt: `Professional corporate event with smiling colleagues in ${area.name}` 
+};
+
+const nearbyList = (intel.nearbyAreas || [])
+  .map((ns) => areas.find((a) => a.slug === ns))
+  .filter((a): a is NonNullable<typeof areas[number]> => Boolean(a));
+
+// Derived unique content — powers strong, area-specific meta titles & descriptions (and will power more content later)
+const venueList = intel.venues.map((v) => v.name).join(' and ');
+const topRequests = intel.crowdProfile.requests.slice(0, 3).join(', ');
+const crowdVibe = intel.crowdProfile.vibe;
+const typicalCrowd = intel.crowdProfile.typicalAges;
+const primaryVenue = intel.venues[0];
+const milestoneInsight = `Corporate events in ${area.name} need to start professional (background, networking) and open up into a proper party at the right moment — we read the room and the brief perfectly.`;
+const hasStories = intel.stories.length > 0;
+const logisticsSummary = intel.logistics.map((l) => l.detail).join(' ');
+
+// === NEW: Area-tailored FAQ content for SEO + conversion ===
+const areaFAQs = [
+  {
+    q: `How do corporate DJs in ${area.name} handle the transition from professional to party?`,
+    a: `${milestoneInsight} We’ve played at ${venueList} and know exactly how ${area.name} professionals like the evening to flow.`
+  },
+  {
+    q: `What logistics and timing should we plan for at ${area.name} corporate venues?`,
+    a: `${logisticsSummary} We build the night around your schedule so the energy builds at exactly the right time.`
+  },
+  {
+    q: `Can you play requests while keeping it suitable for a ${area.name} corporate crowd?`,
+    a: `Yes — ${area.name} teams love ${topRequests}. We keep it tasteful early then deliver the floor-fillers when the time is right.`
+  },
+];
+if (intel.logistics.length > 0) {
+  areaFAQs.push({
+    q: `What do organisers in ${area.name} worry about when booking corporate DJs?`,
+    a: `${intel.logistics[0].detail} We deliver reliable, professional entertainment every time — no surprises.`
+  });
+}
+
+// Enhanced Schema for better SEO
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Corporate Event DJ Hire',
+  provider: {
+    '@type': 'LocalBusiness',
+    '@id': `${siteUrl}/#business`,
+    name: business.name,
+  },
+  areaServed: {
+    '@type': 'Place',
+    name: area.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: area.name,
+      addressRegion: business.addressRegion,
+      addressCountry: business.addressCountry,
+    },
+  },
+  name: `Corporate Event DJs in ${area.name} | Professional & Fun`,
+  description: `Professional corporate event DJs in ${area.name}. ${intel.localPride} 35+ years experience. Staff parties, awards & Christmas events with deep local knowledge of ${venueList}. Tailored for ${typicalCrowd} who appreciate ${topRequests}.`,
+  url: `${siteUrl}/corporate-djs/${area.slug}/`,
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: areaFAQs.map(faq => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a
+    }
+  }))
+};
+---
+
+<Layout
+  title={`Corporate Event DJs in ${area.name} | TeeJays Disco`}
+  description={`${intel.localPride} Professional corporate event DJs in ${area.name} with 35+ years experience. Staff parties, Christmas dos and awards nights for ${typicalCrowd} who appreciate ${topRequests}. We know the venues like ${venueList} and keep the evening professional yet fun. Full sound, lighting & MC. Serving ${area.name} and Greater Manchester.`}
+>
+  <!-- Preload the LCP hero image for this specific area+service page to improve mobile Core Web Vitals (LCP) -->
+  <link slot="head" rel="preload" as="image" href={heroImage.src} fetchpriority="high" />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main class="page">
+    <Header />
+
+    <!-- Prominent phone-first conversion bar — visible immediately for highest mobile conversion on corporate location pages -->
+    <div class="top-phone-cta">
+      <div class="top-phone-inner">
+        <span class="top-phone-label">Your local {area.name} corporate event DJs — call now</span>
+        <a class="top-phone-link" href={contact.phoneHref}>
+          <Icon name="phone" /> <strong>{contact.phone}</strong>
+        </a>
+        <a class="top-phone-link whatsapp" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" /> WhatsApp Tony &amp; John
+        </a>
+        <span class="top-phone-urgency">Most popular {area.name} corporate dates book 5–8 months ahead — secure yours</span>
+      </div>
+    </div>
+
+    <PageHero
+      title={`Corporate DJs in ${area.name}`}
+      subtitle={`Professional, reliable, and able to read a room of colleagues.`}
+      image={heroImage.src}
+      imageAlt={heroImage.alt}
+      ctas={[
+        { label: `Check ${area.name} corporate availability`, href: '/contact/', icon: 'calendar', variant: 'primary' },
+        { label: `Call Tony & John: ${contact.phone}`, href: contact.phoneHref, icon: 'phone', variant: 'ghost' },
+        { label: 'WhatsApp us now', href: contact.whatsappHref, icon: 'whatsapp', variant: 'whatsapp' },
+      ]}
+    />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Corporate DJs', href: '/corporate-djs/' }, { label: area.name }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Corporate DJs in {area.name} who understand the brief</h2>
+          <p class="lede">{intel.localPride}</p>
+          <p>
+            Corporate events in {area.name} range from relaxed team Christmas parties to more formal awards nights. The key is starting professional and opening the night up at the right moment. We’ve done hundreds of these — we know how to keep it appropriate while still creating a proper party.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>35+ years experience with corporate crowds</li>
+            <li><span><Icon name="check" /></span>Smart presentation and clear communication</li>
+            <li><span><Icon name="check" /></span>Background music into dancefloor done smoothly</li>
+            <li><span><Icon name="check" /></span>Experience with awards, Christmas parties, team celebrations</li>
+          </ul>
+
+          <!-- Primary phone + form CTA right after value props for immediate conversion on mobile -->
+          <div class="cta-group primary-conversion">
+            <a class="button primary button-lg" href="/contact/">
+              <Icon name="calendar" />
+              Check Corporate Availability in {area.name}
+            </a>
+            <a class="button ghost button-lg" href={contact.phoneHref}>
+              <Icon name="phone" />
+              Call Tony &amp; John now: {contact.phone}
+            </a>
+          </div>
+          <p class="cta-note"><strong>Most popular {area.name} corporate dates (Christmas parties, awards nights) book 5–8 months in advance.</strong> Secure professional DJs who read the room — enquire today.</p>
+        </div>
+
+        <div class="content-card">
+          <h2>Venues we know for corporate events in {area.name}</h2>
+          {intel.venues.length > 0 ? (
+            <div class="venue-intel-grid">
+              {intel.venues.map((venue) => (
+                <div class="venue-intel-card">
+                  <div class="venue-header">
+                    <strong>{venue.name}</strong>
+                    <span class="venue-type">{venue.type.replace('-', ' ')}</span>
+                  </div>
+                  <p class="venue-notes">{venue.notes}</p>
+
+                  <div class="venue-specs">
+                    {venue.capacity && <div><span>Capacity</span> {venue.capacity}</div>}
+                    <div><span>Parking</span> {venue.parking}</div>
+                    <div><span>Power</span> {venue.power}</div>
+                    <div><span>Loading</span> {venue.loading}</div>
+                  </div>
+
+                  {venue.musicFit && <p class="venue-music"><strong>Music fit:</strong> {venue.musicFit}</p>}
+                  {venue.lastPlayed && <p class="venue-story"><em>{venue.lastPlayed}</em></p>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>We regularly play corporate events across {area.name} in hotels, town halls and function rooms. Ask us about your venue.</p>
+          )}
+
+          <!-- Stronger post-venues conversion CTA with phone for event organisers -->
+          <div class="venue-cta">
+            <p><strong>Know the venue but want DJs who keep corporate events in {area.name} polished yet fun?</strong> We’ve loaded in and delivered at these exact rooms — we know the timing, the acoustics, and when to open the dancefloor without losing the professional tone.</p>
+            <div class="cta-group">
+              <a class="button primary" href="/contact/">
+                <Icon name="calendar" /> Check {area.name} corporate availability
+              </a>
+              <a class="button ghost" href={contact.phoneHref}>
+                <Icon name="phone" /> Call us: {contact.phone}
+              </a>
+            </div>
+            <p class="cta-note" style="margin-top: var(--space-3);"><strong>5–8 months is typical</strong> for securing the best {area.name} corporate dates. Your event date is filling up — reach us today.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`Music that works for corporate events in ${area.name}`} subtitle="Not a generic playlist — the right energy and hits for local professional crowds." />
+      <div class="music-prefs">
+        {intel.musicNotes.map((note) => (
+          <div class="music-note">
+            <div class="music-decade">{note.decade}</div>
+            <div class="music-genres">{note.genres.join(' · ')}</div>
+            <p>{note.whyItWorks}</p>
+          </div>
+        ))}
+      </div>
+      <p class="music-tail">We read the room — starting polished and professional, then opening up into the floor-fillers that {crowdVibe} {area.name} crowds actually want. Never the same set twice.</p>
+    </section>
+
+    <!-- NEW: Dedicated FAQ section for on-page SEO and rich results -->
+    <section class="section">
+      <div class="faq-section">
+        <h3>Common questions from {area.name} organisers planning corporate events</h3>
+        <div class="faq-list">
+          {areaFAQs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))}
+        </div>
+        <p class="faq-cta">Still have questions? <a href={contact.phoneHref}>Call us</a> or <a href="/contact/">send a quick enquiry</a>.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`Other events in ${area.name}`} subtitle="Professional entertainment for every occasion in the area." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href={`/wedding-djs/${slug}/`}>
+          <Icon name="rings" />
+          <span>Wedding DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/birthday-party-djs/${slug}/`}>
+          <Icon name="cake" />
+          <span>Birthday DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/anniversary-djs/${slug}/`}>
+          <Icon name="heart" />
+          <span>Anniversary DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/community-djs/${slug}/`}>
+          <Icon name="group" />
+          <span>Community Events in {area.name}</span>
+        </a>
+        <a class="area-link-card" href="/corporate-djs/">
+          <Icon name="briefcase" />
+          <span>See all Corporate DJ areas</span>
+        </a>
+      </div>
+    </section>
+
+    {nearbyList.length > 0 && (
+      <section class="section">
+        <SectionTitle title={`Corporate DJs in nearby towns`} subtitle="Reliable, professional entertainment for events across the region." />
+        <div class="area-link-grid">
+          {nearbyList.map((nearArea) => (
+            <a class="area-link-card" href={`/corporate-djs/${nearArea.slug}/`}>
+              <Icon name="briefcase" />
+              <span>Corporate DJs in {nearArea.name}</span>
+            </a>
+          ))}
+          <a class="area-link-card" href="/corporate-djs/">
+            <Icon name="briefcase" />
+            <span>All Corporate DJ areas</span>
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- Final high-visibility phone CTA + urgency for conversion -->
+    <section class="section trust-final">
+      <StatStrip />
+      <ReviewsGrid limit={2} title={`What clients say about our corporate events in ${area.name}`} />
+      <div class="final-cta">
+        <h3>Ready to book corporate DJs who keep {area.name} events professional and memorable?</h3>
+        <p>Call Tony &amp; John or send an enquiry. We’ll discuss your brief, venue, timing, and the right balance of background, awards, and dancefloor energy for colleagues and clients.</p>
+        <div class="cta-group">
+          <a class="button primary button-lg" href={contact.phoneHref}>
+            <Icon name="phone" /> Call {contact.phone}
+          </a>
+          <a class="button ghost button-lg" href="/contact/">Send enquiry for {area.name} corporate event</a>
+        </div>
+        <p class="small-note">Based in Tameside. Covering {area.name} and all of Greater Manchester. Fully insured. 35+ years trusted experience. Local DJs who understand corporate crowds.</p>
+      </div>
+    </section>
+
+    <!-- Pre-filled corporate event type + personalized messaging for all corporate location pages -->
+    <ContactBlock 
+      faq={false} 
+      defaultEventType="Corporate Event"
+      headline={`Ready to book ${area.name} corporate event DJs?`}
+      subtitle={`Tell us your date, venue and event type. Local ${area.name} pros will confirm availability and provide a professional quote fast.`}
+      contextNote={`Reliable ${area.name} corporate DJs — punctual, professional and experienced at staff parties, awards and Christmas functions.`}
+      source={`corporate-djs-${slug}`}
+    />
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .lede { font-size: 1.1rem; font-weight: 600; color: var(--ink); }
+  .venue-intel-grid { display: grid; gap: var(--space-5); margin-top: var(--space-4); }
+  @media (min-width: 720px) { .venue-intel-grid { grid-template-columns: repeat(2, 1fr); } }
+  .venue-intel-card { background: var(--paper-2); border: 2px solid var(--ink); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-soft); }
+  .venue-header { display: flex; justify-content: space-between; margin-bottom: var(--space-3); }
+  .venue-header strong { font-size: 1.1rem; }
+  .venue-notes { font-size: 0.95rem; line-height: 1.5; margin-bottom: var(--space-4); }
+  .venue-specs { display: grid; grid-template-columns: 1fr; gap: var(--space-2); font-size: 0.85rem; margin-bottom: var(--space-3); }
+  .venue-specs div { display: flex; gap: var(--space-2); }
+  .venue-specs span { font-weight: 600; min-width: 70px; color: var(--pink); }
+  .venue-music { font-size: 0.9rem; margin: 0; }
+  .venue-type {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+  .venue-story {
+    font-size: 0.9rem;
+    margin: 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Phone CTA & Urgency styles — consistent prominent tap-friendly CTAs + real booking pressure on every corporate page */
+  .cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .cta-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+    font-style: italic;
+  }
+  .venue-cta {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+    border: 2px solid var(--pink);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .venue-cta p {
+    margin-bottom: var(--space-3);
+    font-size: 0.95rem;
+  }
+  .trust-final {
+    text-align: center;
+  }
+  .final-cta {
+    max-width: 720px;
+    margin: var(--space-6) auto 0;
+    padding: var(--space-6);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-lg);
+  }
+  .final-cta h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin-bottom: var(--space-3);
+    color: var(--paper);
+  }
+  .final-cta p {
+    opacity: 0.95;
+    margin-bottom: var(--space-4);
+  }
+  .final-cta .small-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: var(--space-4);
+  }
+  .content-panel .venue-intel-grid {
+    margin-top: var(--space-3);
+  }
+  .music-prefs { display: grid; gap: var(--space-4); max-width: 1000px; margin: 0 auto; }
+  .music-note { background: var(--paper-2); border: 2px solid var(--ink); border-radius: var(--radius-md); padding: var(--space-5); }
+  .music-decade { font-family: var(--font-display); font-size: 1.4rem; color: var(--pink); margin-bottom: var(--space-1); }
+  .music-genres { font-weight: 600; margin-bottom: var(--space-2); color: var(--cobalt); }
+  .music-prefs + p.music-tail {
+    text-align: center;
+    max-width: 700px;
+    margin: var(--space-4) auto 0;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  /* === NEW: FAQ section for SEO rich results === */
+  .faq-section {
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 2px solid var(--ink);
+  }
+
+  .faq-section h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    color: var(--ink);
+  }
+
+  .faq-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: 0;
+  }
+
+  .faq-item summary {
+    font-weight: 600;
+    padding: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--ink);
+  }
+
+  .faq-item summary::after {
+    content: '+';
+    font-size: 1.4rem;
+    color: var(--pink);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] summary::after {
+    content: '−';
+  }
+
+  .faq-item p {
+    padding: var(--space-4);
+    padding-top: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    border-top: 1px solid var(--ink);
+  }
+
+  .faq-cta {
+    margin-top: var(--space-4);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+</style>

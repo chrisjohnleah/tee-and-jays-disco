@@ -6,16 +6,36 @@ import SectionTitle from './SectionTitle.astro';
 
 interface Props {
 	faq?: boolean;
+	/** Pre-select the event type in the form for lower friction (e.g. "Wedding" on wedding pages) */
+	defaultEventType?: string;
+	/** Optional context-specific headline for the booking section */
+	headline?: string;
+	subtitle?: string;
+	/** Show extra fields for weddings (first dance, guest count) to capture richer leads */
+	showWeddingExtras?: boolean;
+	/** Area or service context for personalized reassurance */
+	contextNote?: string;
+	/** Hidden source tracking for which service+location page the lead came from */
+	source?: string;
 }
 
-const { faq = true } = Astro.props;
+const { 
+	faq = true, 
+	defaultEventType, 
+	headline = "Ready to book your DJ?",
+	subtitle = "Let's make your event unforgettable. No obligation — we'll confirm availability and give you a quote.",
+	showWeddingExtras = false,
+	contextNote,
+	source
+} = Astro.props;
 ---
 
 <section class:list={['section', faq ? 'contact-grid' : 'contact-grid contact-only']} id="contact">
 	{faq && <FaqList />}
 
 	<div class="booking">
-		<SectionTitle title="Ready to book your DJ?" subtitle="Let's make your event unforgettable." align="left" />
+		<SectionTitle title={headline} subtitle={subtitle} align="left" />
+		{contextNote && <p class="context-note">{contextNote}</p>}
 		<div class="booking-inner">
 			<div class="contact-methods">
 				<a href={contact.phoneHref}>
@@ -51,23 +71,42 @@ const { faq = true } = Astro.props;
 				<label class="sr-only" for="contact-email">Email address</label>
 				<input id="contact-email" type="email" name="email" placeholder="Email address" autocomplete="email" required />
 
+				<!-- NEW: Phone field for dramatically lower friction — local service, users prefer calls/texts -->
+				<label class="sr-only" for="contact-phone">Phone number (recommended — fastest for quotes)</label>
+				<input id="contact-phone" type="tel" name="phone" placeholder="Phone number (we'll call or WhatsApp you)" autocomplete="tel" />
+
 				<label class="sr-only" for="contact-event-type">Event type</label>
 				<select id="contact-event-type" name="event_type" required>
-					<option value="">Event type</option>
-					{serviceOptions.map((option) => <option value={option}>{option}</option>)}
+					<option value="">Select event type</option>
+					{serviceOptions.map((option) => (
+						<option value={option} selected={defaultEventType === option}>{option}</option>
+					))}
 				</select>
 
 				<label class="sr-only" for="contact-event-date">Event date</label>
 				<input id="contact-event-date" type="date" name="event_date" />
 
+				{showWeddingExtras && (
+					<>
+						<!-- Wedding extras: capture richer lead info with zero extra typing friction -->
+						<label class="sr-only" for="contact-first-dance">First dance song or special request (optional)</label>
+						<input id="contact-first-dance" name="first_dance_song" placeholder="First dance song or special request (optional)" />
+
+						<label class="sr-only" for="contact-guests">Approx. number of guests (optional)</label>
+						<input id="contact-guests" type="number" name="guest_count" placeholder="Approx. guests (optional)" min="20" />
+					</>
+				)}
+
 				<label class="sr-only" for="contact-message">Tell us about your event</label>
-				<textarea id="contact-message" name="message" placeholder="Tell us about your event — venue, timings, the kind of night you want" rows="5" required></textarea>
+				<textarea id="contact-message" name="message" placeholder={showWeddingExtras ? "Venue, timings, any must-play songs or other details..." : "Tell us about your event — venue, timings, the kind of night you want"} rows={showWeddingExtras ? 4 : 5} required></textarea>
+
+				{source && <input type="hidden" name="source" value={source} />}
 
 				<button class="button primary" type="submit">
 					<Icon name="send" />
-					Send Enquiry
+					Get my quote &amp; availability
 				</button>
-				<small>We aim to respond to all enquiries within 24 hours.</small>
+				<small>We aim to respond to all enquiries within 24 hours. For fastest reply, call or WhatsApp {contact.phone}.</small>
 			</form>
 		</div>
 	</div>

@@ -1,0 +1,145 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
+---
+
+<Layout
+  title="Anniversary DJs across Tameside, Manchester & the North West | TeeJays Disco"
+  description="Specialist anniversary DJs in Tameside, Stockport, Oldham & Manchester for 25th, 40th, 50th & milestone celebrations. Multi-gen experts with deep local venue knowledge across 50+ spots. Get your quote."
+>
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Anniversary DJs who understand the memories"
+      subtitle="Tony & John — 35+ years each. We play the songs that mean something to the people in the room — and still get the dancefloor going when it’s time."
+      image="/images/services/anniversaries/anniversary-family-dancing-together-6518005.jpg"
+      imageAlt="Happy multi-generational family celebrating a milestone anniversary with dancing at a TeeJays Disco event"
+    />
+
+    <StatStrip />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Anniversary DJs' }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Anniversary DJs who turn memories into a night everyone remembers</h2>
+          <p>
+            Milestone anniversaries bring three generations together. We pace the night with warmth and classics early for the couple and their friends, then gradually bring in the energy that gets the younger family members dancing — without ever losing the heart and emotion of the occasion.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>Milestone specialists — 25th, 40th, 50th &amp; beyond planned around the couple’s story</li>
+            <li><span><Icon name="check" /></span>35+ years each — hundreds of family celebrations across these exact towns and venues</li>
+            <li><span><Icon name="check" /></span>Deep venue knowledge for family events — power, acoustics, curfews and what works</li>
+            <li><span><Icon name="check" /></span>Multi-gen reading — grandparents to grandchildren all feel part of the night</li>
+          </ul>
+          <p style="margin-top: var(--space-4);">
+            <a href="#contact" class="button primary">Check availability for your anniversary</a>
+            <a href={contact.phoneHref} class="button ghost" style="margin-left: 12px;">Call {contact.phone}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="Anniversary DJs in 8 priority towns" subtitle="Real venue intelligence for milestone family celebrations. Every area page details the halls and crowds that make 25ths, 40ths and 50ths special locally." />
+
+      <div class="area-list-grid">
+        {areaCards.map((card) => (
+          <a class="area-list-card" href={`/anniversary-djs/${card.slug}/`}>
+            <div class="area-list-icon"><Icon name="heart" /></div>
+            <h3>Anniversary DJs in {card.name}</h3>
+            <p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+            {card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+            <span class="area-list-cta">See venues, music &amp; stories →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="The TeeJays anniversary difference" subtitle="Not just the oldies playlist — milestone celebrations done with heart and energy." />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Milestone pacing that feels right</h2>
+          <p>We speak to you in advance about the couple, the family and the vibe. We know which rooms suit a quiet, emotional first dance moment and which ones want the party energy earlier. Every anniversary gets its own perfect rhythm.</p>
+        </div>
+        <div class="content-card">
+          <h2>Classics that the room actually sings</h2>
+          <p>We know the tracks that Tameside, Stockport or Oldham crowds of that generation will actually belt out — the ones that mean something. Not random old songs, but the ones that spark real memories.</p>
+        </div>
+        <div class="content-card">
+          <h2>Multi-gen room reading</h2>
+          <p>Hyde loves a big family singalong. Altrincham wants taste and quality. We adapt the energy and song choices so grandparents, parents and kids all feel included and have their moment on the floor.</p>
+        </div>
+      </div>
+    </section>
+
+    <ReviewsGrid limit={3} title="What families say about our anniversary DJs" />
+
+    <section class="section">
+      <SectionTitle title="Other celebrations we cover with the same care" subtitle="Family-focused DJs for weddings, birthdays, corporate events and community gatherings." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href="/wedding-djs/">
+          <Icon name="rings" />
+          <span>Wedding DJs</span>
+        </a>
+        <a class="area-link-card" href="/birthday-party-djs/">
+          <Icon name="cake" />
+          <span>Birthday Party DJs</span>
+        </a>
+        <a class="area-link-card" href="/corporate-djs/">
+          <Icon name="briefcase" />
+          <span>Corporate Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/school-disco-djs/">
+          <Icon name="graduate" />
+          <span>School Disco DJs</span>
+        </a>
+        <a class="area-link-card" href="/pub-club-djs/">
+          <Icon name="music" />
+          <span>Pub &amp; Club Night DJs</span>
+        </a>
+        <a class="area-link-card" href="/community-djs/">
+          <Icon name="group" />
+          <span>Community Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/areas/">
+          <Icon name="pin" />
+          <span>Browse all areas we cover</span>
+        </a>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

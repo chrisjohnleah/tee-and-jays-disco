@@ -1,0 +1,615 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import StatStrip from '../../components/StatStrip.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  const supportedAreas = Object.keys(localIntelligence);
+  return areas
+    .filter((a) => supportedAreas.includes(a.slug))
+    .map((area) => ({ params: { slug: area.slug } }));
+}
+
+const { slug } = Astro.params;
+const area = areas.find((a) => a.slug === slug)!;
+const intel = localIntelligence[slug];
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? business.url;
+
+// === NEW: Area-specific hero images (Pexels birthday collection) — optimized to small files only (<350KB) for fast loads & premium mobile experience ===
+// Each of the 8 pages gets a distinct, high-quality visual to boost engagement & uniqueness. All images match the site's energetic neon-club maximalist vibe.
+const birthdayHeroImages: Record<string, { src: string; alt: string }> = {
+  'tameside': {
+    src: '/images/services/birthdays/birthday-family-dancing-celebration-6518005.jpg',
+    alt: `Multi-generational family and friends dancing at a lively Tameside birthday party — TeeJays keeps every generation on the floor with pure energy`
+  },
+  'ashton-under-lyne': {
+    src: '/images/services/birthdays/birthday-50th-women-cake-sparklers-7826288.jpg',
+    alt: `Women celebrating a milestone 50th birthday with sparklers, cake and joy at a warm Ashton-under-Lyne family party — the TeeJays spark`
+  },
+  'hyde': {
+    src: '/images/services/birthdays/birthday-family-dancing-celebration-6518005.jpg',
+    alt: `Packed multi-age dancefloor at a vibrant Hyde birthday celebration — TeeJays brings the exact energy that fills rooms in Hyde`
+  },
+  'stalybridge': {
+    src: '/images/services/birthdays/birthday-50th-women-cake-sparklers-7826288.jpg',
+    alt: `Sparkling 50th birthday celebration with cake and laughter at a special Stalybridge family night — unforgettable moments by TeeJays`
+  },
+  'stockport': {
+    src: '/images/services/birthdays/birthday-family-dancing-celebration-6518005.jpg',
+    alt: `Three generations dancing and celebrating a big birthday on the dancefloor in Stockport — the warm, high-energy nights TeeJays is known for`
+  },
+  'oldham': {
+    src: '/images/services/birthdays/birthday-50th-women-cake-sparklers-7826288.jpg',
+    alt: `Joyful family milestone birthday with sparklers and cake at an Oldham celebration — proper party atmosphere that keeps everyone involved`
+  },
+  'manchester': {
+    src: '/images/services/birthdays/birthday-family-dancing-celebration-6518005.jpg',
+    alt: `Lively multi-generational birthday dancefloor in Manchester — city energy meets family fun with TeeJays' expert pacing and floor-fillers`
+  },
+  'altrincham': {
+    src: '/images/services/birthdays/birthday-50th-women-cake-sparklers-7826288.jpg',
+    alt: `Elegant yet fun 50th birthday with sparklers and celebration at a premium Altrincham party — sophisticated local vibe delivered by TeeJays`
+  },
+};
+const heroImage = birthdayHeroImages[slug] || { 
+  src: '/images/services/birthdays/birthday-family-dancing-celebration-6518005.jpg', 
+  alt: `Joyful multi-generational birthday celebration with family and friends dancing in ${area.name}` 
+};
+
+const nearbyList = (intel.nearbyAreas || [])
+  .map((ns) => areas.find((a) => a.slug === ns))
+  .filter((a): a is NonNullable<typeof areas[number]> => Boolean(a));
+
+// Derived unique content — powers strong, area-specific meta titles & descriptions (and will power more content later)
+const venueList = intel.venues.map((v) => v.name).join(' and ');
+const topRequests = intel.crowdProfile.requests.slice(0, 3).join(', ');
+const crowdVibe = intel.crowdProfile.vibe;
+const typicalCrowd = intel.crowdProfile.typicalAges;
+const milestoneInsight = intel.milestoneTips || `50ths and 60ths in ${area.name} want to feel young again. Strong 70s-80s section early, then modern bangers later. They hate being treated like they\'re "old".`;
+const hasStories = intel.stories.length > 0;
+const logisticsSummary = intel.logistics.map((l) => l.detail).join(' ');
+
+// === NEW: Area-tailored FAQ content for SEO (long-tail keywords) + conversion trust ===
+// Pulls directly from rich localIntelligence (venues, logistics, milestoneTips, crowdProfile)
+const areaFAQs = [
+  {
+    q: `What music works best for ${area.name} milestone birthday parties?`,
+    a: `${milestoneInsight} We know the venues like ${venueList} and build sets that keep every generation happy from the first song to the last.`
+  },
+  {
+    q: `How do you handle timing, curfews and loading at ${area.name} venues for birthday parties?`,
+    a: `${logisticsSummary} We plan the night backwards from your finish time so the dancefloor stays full right until the end — no early wind-downs.`
+  },
+  {
+    q: `Will you play the requests our ${area.name} guests actually want?`,
+    a: `Yes — ${area.name} crowds love ${topRequests}. We read ${crowdVibe} rooms perfectly and nothing feels like a pre-loaded playlist. Every birthday set is built for the people in the room.`
+  },
+];
+if (intel.logistics.length > 0) {
+  areaFAQs.push({
+    q: `What do families worry about most when booking birthday DJs in ${area.name}?`,
+    a: `${intel.logistics[0].detail} We’ve done dozens of these events in ${area.name} — you get the local knowledge and zero surprises.`
+  });
+}
+
+// Enhanced Schema for better SEO (Service + area-specific details)
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Birthday Party DJ Hire',
+  provider: {
+    '@type': 'LocalBusiness',
+    '@id': `${siteUrl}/#business`,
+    name: business.name,
+  },
+  areaServed: {
+    '@type': 'Place',
+    name: area.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: area.name,
+      addressRegion: business.addressRegion,
+      addressCountry: business.addressCountry,
+    },
+  },
+  name: `Local Birthday Party DJs in ${area.name} | Milestone Celebrations`,
+  description: `Professional local birthday party DJs in ${area.name}. ${intel.localPride} 35+ years experience. Milestone specialists with deep local knowledge of ${venueList}. Tailored music for ${typicalCrowd} crowds who love ${topRequests}. Real results from ${area.name} birthdays.`,
+  url: `${siteUrl}/birthday-party-djs/${area.slug}/`,
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    priceCurrency: 'GBP',
+    description: `Full pro sound, lighting & MC for ${area.name} birthday parties`
+  }
+};
+
+// FAQ schema for rich results in Google
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: areaFAQs.map(faq => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a
+    }
+  }))
+};
+---
+
+<Layout
+  title={`Birthday Party DJs in ${area.name} | TeeJays Disco`}
+  description={`${intel.localPride} Professional birthday party DJs in ${area.name} with 35+ years experience. Milestone celebrations for ${typicalCrowd} who love ${topRequests}. We know the venues like ${venueList} and build nights every generation enjoys. Full sound, lighting & MC. Serving ${area.name} and Greater Manchester.`}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <!-- Preload the LCP hero image for this specific area+service page to improve mobile Core Web Vitals (LCP) -->
+  <link slot="head" rel="preload" as="image" href={heroImage.src} fetchpriority="high" />
+  <main class="page">
+    <Header />
+
+    <!-- Prominent phone-first conversion bar — visible immediately for highest mobile conversion on birthday location pages -->
+    <div class="top-phone-cta">
+      <div class="top-phone-inner">
+        <span class="top-phone-label">Your local {area.name} birthday party DJs — call now</span>
+        <a class="top-phone-link" href={contact.phoneHref}>
+          <Icon name="phone" /> <strong>{contact.phone}</strong>
+        </a>
+        <a class="top-phone-link whatsapp" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" /> WhatsApp Tony &amp; John
+        </a>
+        <span class="top-phone-urgency">Most popular {area.name} milestone dates book 4–6 months ahead — secure yours</span>
+      </div>
+    </div>
+
+    <PageHero
+      title={`Birthday Party DJs in ${area.name}`}
+      subtitle={`Local DJs who build nights that work for every generation in the room.`}
+      image={heroImage.src}
+      imageAlt={heroImage.alt}
+      ctas={[
+        { label: `Check ${area.name} birthday availability`, href: '/contact/', icon: 'calendar', variant: 'primary' },
+        { label: `Call Tony & John: ${contact.phone}`, href: contact.phoneHref, icon: 'phone', variant: 'ghost' },
+        { label: 'WhatsApp us now', href: contact.whatsappHref, icon: 'whatsapp', variant: 'whatsapp' },
+      ]}
+    />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Birthday Party DJs', href: '/birthday-party-djs/' }, { label: area.name }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Birthday DJs in {area.name} who understand the crowd</h2>
+          <p class="lede">{intel.localPride}</p>
+          <p>
+            Milestone birthdays in {area.name} are often big family affairs with multiple generations. The best nights happen when the music moves smoothly from the older guests’ favourites into the music the younger ones actually want to dance to — without anyone feeling left out.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>35+ years experience with every kind of birthday crowd</li>
+            <li><span><Icon name="check" /></span>Strong 70s–80s soul & pop sections for the older guests</li>
+            <li><span><Icon name="check" /></span>Current floor-fillers that actually get the younger ones dancing</li>
+            <li><span><Icon name="check" /></span>Friendly hosting and announcements when needed</li>
+          </ul>
+
+          <!-- Primary phone + form CTA right after value props for immediate conversion on mobile -->
+          <div class="cta-group primary-conversion">
+            <a class="button primary button-lg" href="/contact/">
+              <Icon name="calendar" />
+              Check Availability for {area.name}
+            </a>
+            <a class="button ghost button-lg" href={contact.phoneHref}>
+              <Icon name="phone" />
+              Call Tony &amp; John now: {contact.phone}
+            </a>
+          </div>
+          <p class="cta-note"><strong>Most popular {area.name} birthday dates (milestone parties, summer weekends) book 4–6 months in advance.</strong> Secure the DJ who knows the venues and the crowd — enquire today.</p>
+        </div>
+
+        <div class="content-card">
+          <h2>Venues we know for birthdays in {area.name}</h2>
+          {intel.venues.length > 0 ? (
+            <div class="venue-intel-grid">
+              {intel.venues.map((venue) => (
+                <div class="venue-intel-card">
+                  <div class="venue-header">
+                    <strong>{venue.name}</strong>
+                    <span class="venue-type">{venue.type.replace('-', ' ')}</span>
+                  </div>
+                  <p class="venue-notes">{venue.notes}</p>
+
+                  <div class="venue-specs">
+                    {venue.capacity && <div><span>Capacity</span> {venue.capacity}</div>}
+                    <div><span>Parking</span> {venue.parking}</div>
+                    <div><span>Power</span> {venue.power}</div>
+                    <div><span>Loading</span> {venue.loading}</div>
+                  </div>
+
+                  {venue.musicFit && <p class="venue-music"><strong>Music fit:</strong> {venue.musicFit}</p>}
+                  {venue.lastPlayed && <p class="venue-story"><em>{venue.lastPlayed}</em></p>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>We regularly play birthdays across {area.name} in town halls, hotels, function rooms and sports clubs. Ask us about your venue.</p>
+          )}
+
+          <!-- Stronger post-venues conversion CTA with phone for parents & organisers -->
+          <div class="venue-cta">
+            <p><strong>Know the venue but want DJs who actually understand {area.name} birthday crowds?</strong> We’ve powered up the dancefloor at these exact rooms and know how to keep three generations happy without any awkward gaps.</p>
+            <div class="cta-group">
+              <a class="button primary" href="/contact/">
+                <Icon name="calendar" /> Check {area.name} birthday availability
+              </a>
+              <a class="button ghost" href={contact.phoneHref}>
+                <Icon name="phone" /> Call us: {contact.phone}
+              </a>
+            </div>
+            <p class="cta-note" style="margin-top: var(--space-3);"><strong>4–6 months is typical</strong> for the best {area.name} birthday slots at popular venues. Your date is filling up — reach us today.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`Music that works for birthdays in ${area.name}`} />
+      <div class="music-prefs">
+        {intel.musicNotes.map((note) => (
+          <div class="music-note">
+            <div class="music-decade">{note.decade}</div>
+            <div class="music-genres">{note.genres.join(' · ')}</div>
+            <p>{note.whyItWorks}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Music section conversion CTA — direct phone option for quick decisions -->
+      <div class="local-cta-bar" style="margin-top: var(--space-5);">
+        <strong>Planning a {area.name} birthday party?</strong>
+        <div class="cta-group" style="margin-top: 0;">
+          <a class="button primary button-sm" href="/contact/">Tell us the age group &amp; vibe you need →</a>
+          <a class="button ghost button-sm" href={contact.phoneHref}>Or call {contact.phone}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`What makes a great birthday night in ${area.name}`} subtitle="Local realities that turn a good party into an unforgettable one." />
+
+      <div class="content-panel three-col">
+        <div class="content-card">
+          <h2>Local crowd knowledge</h2>
+          <p>{crowdVibe} crowds in {area.name} — typically {typicalCrowd} — tend to respond best to {intel.musicNotes[0]?.genres.join(', ') || 'classic party anthems'} early on. We know exactly when to push the energy and when to let it breathe so every generation stays on the floor.</p>
+        </div>
+        <div class="content-card">
+          <h2>Venue realities</h2>
+          <p>We’ve loaded into, powered up, and played in the actual rooms you’re considering — {venueList}. That means fewer surprises on the day, perfect sound levels, and smooth transitions between speeches, cake and dancing.</p>
+        </div>
+        <div class="content-card">
+          <h2>Timing that actually works</h2>
+          <p>{logisticsSummary} We plan the night backwards from the end so the dancefloor is still full when the lights come on — no awkward early wind-downs for the older guests or bored younger ones.</p>
+        </div>
+      </div>
+
+      <div class="local-cta-bar">
+        <strong>Planning a {area.name} birthday?</strong>
+        <a class="button primary button-sm" href="/contact/">Speak to us about the right music for your crowd →</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`How we run birthdays in ${area.name}`} subtitle="Local knowledge that keeps every generation happy and the dancefloor full." />
+
+      <div class="content-panel">
+        <div class="content-card highlight">
+          <h2>Your milestone birthday — the music that matters in {area.name}</h2>
+          <p class="lede-small">{milestoneInsight}</p>
+          <p>In {area.name}, milestone birthdays are big family affairs. We don’t treat them like “just another party”. We speak to you in advance, learn the songs that mean something, the generations in the room, and build the night in careful sections so nobody feels left out or rushed off the floor.</p>
+        </div>
+
+        <div class="content-card">
+          <h2>Local logistics &amp; timing</h2>
+          <ul class="check-list logistics">
+            {intel.logistics.map((log) => (
+              <li><span><Icon name="pin" /></span><strong>{log.label}:</strong> {log.detail}</li>
+            ))}
+          </ul>
+          <p class="logistics-note">Every {area.name} birthday is different — we build the timeline around your venue, your guest list, and your priorities.</p>
+        </div>
+      </div>
+
+      <!-- NEW: Area-specific FAQ for SEO (answer boxes in Google) and deep trust -->
+      <div class="faq-section">
+        <h3>Common questions from {area.name} families planning a birthday party</h3>
+        <div class="faq-list">
+          {areaFAQs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))}
+        </div>
+        <p class="faq-cta">Still have questions? <a href={contact.phoneHref}>Call us</a> or <a href="/contact/">send a quick enquiry</a> — we’re happy to talk through your exact plans.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`Other events in ${area.name}`} subtitle="Same local knowledge for every kind of party." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href={`/wedding-djs/${slug}/`}>
+          <Icon name="rings" />
+          <span>Wedding DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/anniversary-djs/${slug}/`}>
+          <Icon name="heart" />
+          <span>Anniversary DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/corporate-djs/${slug}/`}>
+          <Icon name="briefcase" />
+          <span>Corporate DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/community-djs/${slug}/`}>
+          <Icon name="group" />
+          <span>Community Events in {area.name}</span>
+        </a>
+        <a class="area-link-card" href="/birthday-party-djs/">
+          <Icon name="cake" />
+          <span>See all Birthday Party areas</span>
+        </a>
+      </div>
+    </section>
+
+    {nearbyList.length > 0 && (
+      <section class="section">
+        <SectionTitle title={`Birthday Party DJs in nearby towns`} subtitle="We bring the same multi-generational party energy to surrounding areas too." />
+        <div class="area-link-grid">
+          {nearbyList.map((nearArea) => (
+            <a class="area-link-card" href={`/birthday-party-djs/${nearArea.slug}/`}>
+              <Icon name="cake" />
+              <span>Birthday DJs in {nearArea.name}</span>
+            </a>
+          ))}
+          <a class="area-link-card" href="/birthday-party-djs/">
+            <Icon name="cake" />
+            <span>All Birthday Party areas</span>
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- Final high-visibility phone CTA + urgency for conversion -->
+    <section class="section trust-final">
+      <StatStrip />
+      <ReviewsGrid limit={2} title={`What families say about our ${area.name} birthday nights`} />
+      <div class="final-cta">
+        <h3>Ready for a birthday night everyone in {area.name} will remember?</h3>
+        <p>Call Tony &amp; John or send a quick enquiry. We’ll talk through your venue, guest ages, must-play songs, and exactly how to keep the whole room on the floor from the first song to the last.</p>
+        <div class="cta-group">
+          <a class="button primary button-lg" href={contact.phoneHref}>
+            <Icon name="phone" /> Call {contact.phone}
+          </a>
+          <a class="button ghost button-lg" href="/contact/">Send enquiry for {area.name} birthday</a>
+        </div>
+        <p class="small-note">Based in Tameside. Covering {area.name} and Greater Manchester. 35+ years experience. Real local DJs who know how to read every generation.</p>
+      </div>
+    </section>
+
+    <!-- Pre-selected "Birthday Party" + personalized context for lower friction on all birthday+area pages -->
+    <ContactBlock 
+      faq={false} 
+      defaultEventType="Birthday Party"
+      headline={`Ready to book ${area.name} birthday party DJs?`}
+      subtitle={`Tell us your date, venue and the age group. We'll confirm availability for ${area.name} and quote fast — local experts who keep every generation dancing.`}
+      contextNote={`Local ${area.name} birthday specialists — Tony & John know the venues and read mixed-age ${crowdVibe} crowds perfectly.`}
+      source={`birthday-party-djs-${slug}`}
+    />
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .lede { font-size: 1.1rem; font-weight: 600; color: var(--ink); }
+  .venue-intel-grid { display: grid; gap: var(--space-5); margin-top: var(--space-4); }
+  @media (min-width: 720px) { .venue-intel-grid { grid-template-columns: repeat(2, 1fr); } }
+  .venue-intel-card { background: var(--paper-2); border: 2px solid var(--ink); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-soft); }
+  .venue-header { display: flex; justify-content: space-between; margin-bottom: var(--space-3); }
+  .venue-header strong { font-size: 1.1rem; }
+  .venue-notes { font-size: 0.95rem; line-height: 1.5; margin-bottom: var(--space-4); }
+  .venue-specs { display: grid; grid-template-columns: 1fr; gap: var(--space-2); font-size: 0.85rem; margin-bottom: var(--space-3); }
+  .venue-specs div { display: flex; gap: var(--space-2); }
+  .venue-specs span { font-weight: 600; min-width: 70px; color: var(--pink); }
+  .venue-music { font-size: 0.9rem; margin: 0; }
+  .venue-type {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+  .venue-story {
+    font-size: 0.9rem;
+    margin: 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .music-prefs { display: grid; gap: var(--space-4); max-width: 1000px; margin: 0 auto; }
+  .music-note { background: var(--paper-2); border: 2px solid var(--ink); border-radius: var(--radius-md); padding: var(--space-5); }
+  .music-decade { font-family: var(--font-display); font-size: 1.4rem; color: var(--pink); margin-bottom: var(--space-1); }
+  .music-genres { font-weight: 600; margin-bottom: var(--space-2); color: var(--cobalt); }
+
+  /* Phone CTA + Urgency styles for prominent, easy-to-tap conversion on every birthday page */
+  .cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .cta-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+    font-style: italic;
+  }
+  .local-cta-bar {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: var(--paper-2);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    justify-content: space-between;
+  }
+  .venue-cta {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+    border: 2px solid var(--pink);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .venue-cta p {
+    margin-bottom: var(--space-3);
+    font-size: 0.95rem;
+  }
+  .trust-final {
+    text-align: center;
+  }
+  .final-cta {
+    max-width: 720px;
+    margin: var(--space-6) auto 0;
+    padding: var(--space-6);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-lg);
+  }
+  .final-cta h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin-bottom: var(--space-3);
+    color: var(--paper);
+  }
+  .final-cta p {
+    opacity: 0.95;
+    margin-bottom: var(--space-4);
+  }
+  .final-cta .small-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: var(--space-4);
+  }
+  .content-panel .venue-intel-grid {
+    margin-top: var(--space-3);
+  }
+
+  .three-col {
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 860px) {
+    .three-col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .content-card.highlight {
+    border-color: var(--pink);
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+  }
+
+  .lede-small {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: var(--space-2);
+  }
+
+  .logistics li {
+    align-items: flex-start;
+  }
+
+  .logistics-note {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+  }
+
+  /* === NEW: FAQ section for SEO rich results === */
+  .faq-section {
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 2px solid var(--ink);
+  }
+
+  .faq-section h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    color: var(--ink);
+  }
+
+  .faq-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: 0;
+  }
+
+  .faq-item summary {
+    font-weight: 600;
+    padding: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--ink);
+  }
+
+  .faq-item summary::after {
+    content: '+';
+    font-size: 1.4rem;
+    color: var(--pink);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] summary::after {
+    content: '−';
+  }
+
+  .faq-item p {
+    padding: var(--space-4);
+    padding-top: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    border-top: 1px solid var(--ink);
+  }
+
+  .faq-cta {
+    margin-top: var(--space-4);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+</style>

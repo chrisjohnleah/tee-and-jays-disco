@@ -1,0 +1,167 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? business.url;
+---
+
+<Layout
+  title="Wedding DJs across Tameside, Manchester & the North West | TeeJays Disco"
+  description="Expert local wedding DJs in Tameside, Stockport, Oldham, Manchester & Greater Manchester. 35+ years experience, first-dance specialists who know 50+ real venues. Check availability for your wedding today."
+>
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Wedding DJs who actually know the venues"
+      subtitle="Tony & John — 35+ years each. We’ve played the rooms, read the crowds, and know exactly what works on a wedding day across Greater Manchester."
+      image="/images/services/weddings/wedding-guests-dancing-string-lights-29569636.jpg"
+      imageAlt="Wedding guests dancing joyfully under string lights at a lively TeeJays Disco wedding reception"
+    />
+
+    <StatStrip />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Wedding DJs' }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>The local wedding DJs who make first dances unforgettable</h2>
+          <p>
+            Your wedding deserves more than a generic playlist. The magic happens when your DJ knows the exact room, the acoustics, the curfew, the typical crowd vibe in that town — and paces the night from emotional first dance through to a packed floor until the final song.
+          </p>
+          <p>
+            Tony &amp; John bring 35+ years each of real Tameside, Stockport, Oldham and Manchester wedding experience. No two weddings are the same — and neither are our sets.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>First dance specialists — we ask for the story, not just the song title</li>
+            <li><span><Icon name="check" /></span>35+ years each — hundreds of real weddings across these exact venues</li>
+            <li><span><Icon name="check" /></span>Deep venue intelligence — loading, power, acoustics, curfews and what actually works here</li>
+            <li><span><Icon name="check" /></span>Multi-generational crowd reading — we keep every age group happy and dancing</li>
+          </ul>
+          <p style="margin-top: var(--space-4);">
+            <a href="#contact" class="button primary">Check availability &amp; get your quote</a>
+            <a href={contact.phoneHref} class="button ghost" style="margin-left: 12px;">Call {contact.phone}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="Wedding DJs in 8 priority towns" subtitle="Real venue intelligence, not generic playlists. Every area page below details the actual rooms, crowds and music that works locally — 50+ venues we know inside out." />
+
+      <div class="area-list-grid">
+        {areaCards.map((card) => (
+          <a class="area-list-card" href={`/wedding-djs/${card.slug}/`}>
+            <div class="area-list-icon"><Icon name="rings" /></div>
+            <h3>Wedding DJs in {card.name}</h3>
+            <p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+            {card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+            <span class="area-list-cta">See local venues, music &amp; stories →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="The TeeJays wedding difference" subtitle="Not a USB and a smile — proper local wedding specialists." />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Venue-first planning</h2>
+          <p>We call the venue ourselves. We know the loading bay quirks at Hyde Town Hall, the power points at Stalybridge Civic, the curfews in Stockport and Oldham function rooms. Your night runs smoothly because we’ve done it here before.</p>
+        </div>
+        <div class="content-card">
+          <h2>First dances that feel like magic</h2>
+          <p>We don’t just hit play. We ask about your story, your song choice, the moment you want to create — then we craft a seamless, emotional transition into the party that never drops the energy.</p>
+        </div>
+        <div class="content-card">
+          <h2>Crowd reading that actually works</h2>
+          <p>Tameside loves a big singalong. Altrincham appreciates quality. Manchester wants current hits mixed with classics. We read the exact mix of ages and energy in the room and adapt on the fly — no two weddings sound the same.</p>
+        </div>
+      </div>
+    </section>
+
+    <ReviewsGrid limit={3} title="What couples say about our wedding DJs" />
+
+    <section class="section">
+      <SectionTitle title="Other celebrations we cover with the same local expertise" subtitle="Weddings are our passion — but we bring the same venue knowledge and crowd-reading to every kind of party." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href="/birthday-party-djs/">
+          <Icon name="cake" />
+          <span>Birthday Party DJs</span>
+        </a>
+        <a class="area-link-card" href="/anniversary-djs/">
+          <Icon name="heart" />
+          <span>Anniversary DJs</span>
+        </a>
+        <a class="area-link-card" href="/corporate-djs/">
+          <Icon name="briefcase" />
+          <span>Corporate Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/school-disco-djs/">
+          <Icon name="graduate" />
+          <span>School Disco DJs</span>
+        </a>
+        <a class="area-link-card" href="/pub-club-djs/">
+          <Icon name="music" />
+          <span>Pub &amp; Club Night DJs</span>
+        </a>
+        <a class="area-link-card" href="/community-djs/">
+          <Icon name="group" />
+          <span>Community Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/areas/">
+          <Icon name="pin" />
+          <span>Browse all areas we cover</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="content-card" style="text-align: center; background: var(--ink); color: var(--paper);">
+        <h2 style="color: var(--paper);">Ready to book your wedding DJs?</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 1rem;">Tony &amp; John — 35+ years experience. Local to Tameside &amp; Greater Manchester.</p>
+        <p style="margin-bottom: 1.5rem;"><strong>Most popular wedding dates across Greater Manchester book 6–9 months in advance.</strong></p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a class="button primary" href="/contact/" style="font-size: 1.1rem; padding: 0.9rem 2rem;">
+            <Icon name="calendar" /> Check Availability
+          </a>
+          <a class="button ghost" href="tel:07545378105" style="font-size: 1.1rem; padding: 0.9rem 2rem; border-color: var(--paper); color: var(--paper);">
+            <Icon name="phone" /> Call Tony &amp; John: 07545 378105
+          </a>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.9;">Fastest way to check dates — just call or send a quick message.</p>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

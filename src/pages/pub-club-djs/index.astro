@@ -1,0 +1,145 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
+---
+
+<Layout
+  title="Pub & Club Night DJs across Tameside, Manchester & the North West | TeeJays Disco"
+  description="Floor-filling pub & club night DJs in Tameside, Stockport, Oldham & Manchester. Decades of experience keeping real dancefloors full until closing across local pubs and late venues. Get your quote."
+>
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Pub & Club Night DJs who actually read the room"
+      subtitle="Tony & John — 35+ years each. We play for the crowd in front of us, not a fixed setlist."
+      image="/images/services/pub-club/club-night-neon-dancefloor-crowd-342520.jpg"
+      imageAlt="Vibrant crowd dancing on a neon-lit dancefloor at a busy pub or club night with TeeJays Disco"
+    />
+
+    <StatStrip />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Pub & Club DJs' }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Pub & Club DJs who keep the floor full until closing</h2>
+          <p>
+            These nights are won or lost on energy, smart request handling and perfect timing. Decades in real North West pubs, clubs and late venues mean we know how to read a lively crowd, slot requests in without killing momentum, push when the room wants it and pull back before it burns out — keeping the dancefloor moving right to the end.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>Expert crowd reading + smart request handling that works</li>
+            <li><span><Icon name="check" /></span>Control in lively, sometimes rowdy venues — always professional</li>
+            <li><span><Icon name="check" /></span>Decades-spanning party sets that actually pack real dancefloors</li>
+            <li><span><Icon name="check" /></span>Comfortable with late finishes in authentic pub & club settings</li>
+          </ul>
+          <p style="margin-top: var(--space-4);">
+            <a href="#contact" class="button primary">Check pub/club night availability</a>
+            <a href={contact.phoneHref} class="button ghost" style="margin-left: 12px;">Call {contact.phone}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="Pub & Club DJs in 8 priority towns" subtitle="Real venue intelligence for proper floor-filling nights. Every area page covers the pubs, clubs and late spots we know and the music that keeps local crowds dancing." />
+
+      <div class="area-list-grid">
+        {areaCards.map((card) => (
+          <a class="area-list-card" href={`/pub-club-djs/${card.slug}/`}>
+            <div class="area-list-icon"><Icon name="music" /></div>
+            <h3>Pub & Club DJs in {card.name}</h3>
+            <p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+            {card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+            <span class="area-list-cta">See venues, music &amp; approach →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="How we run pub & club nights differently" subtitle="Not a USB and hope — decades of real floor-filling experience in local venues." />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Venue-specific know-how</h2>
+          <p>We know the actual local pubs and clubs — which have great dancefloors, which have tight loading or awkward stages, which crowds want Northern Soul vs chart. We plan around the real room and the regulars who drink there every weekend.</p>
+        </div>
+        <div class="content-card">
+          <h2>Request handling that keeps the floor full</h2>
+          <p>We don’t just play every request. We read the room, time requests perfectly, and keep momentum. The dancefloor stays packed because we know exactly what the local crowd wants to hear right now.</p>
+        </div>
+        <div class="content-card">
+          <h2>Late-night stamina &amp; control</h2>
+          <p>Hundreds of 1am finishes under our belt. We pace the night to peak at the right moment and never fizzle — while staying safe and professional for the venue staff right to the end.</p>
+        </div>
+      </div>
+    </section>
+
+    <ReviewsGrid limit={3} title="What venues say about our pub & club DJs" />
+
+    <section class="section">
+      <SectionTitle title="Other events we cover with the same floor-filling energy" subtitle="Experienced DJs who read any crowd — from weddings and birthdays to corporate and community nights." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href="/wedding-djs/">
+          <Icon name="rings" />
+          <span>Wedding DJs</span>
+        </a>
+        <a class="area-link-card" href="/birthday-party-djs/">
+          <Icon name="cake" />
+          <span>Birthday Party DJs</span>
+        </a>
+        <a class="area-link-card" href="/anniversary-djs/">
+          <Icon name="heart" />
+          <span>Anniversary DJs</span>
+        </a>
+        <a class="area-link-card" href="/corporate-djs/">
+          <Icon name="briefcase" />
+          <span>Corporate Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/school-disco-djs/">
+          <Icon name="graduate" />
+          <span>School Disco DJs</span>
+        </a>
+        <a class="area-link-card" href="/community-djs/">
+          <Icon name="group" />
+          <span>Community Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/areas/">
+          <Icon name="pin" />
+          <span>Browse all areas we cover</span>
+        </a>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

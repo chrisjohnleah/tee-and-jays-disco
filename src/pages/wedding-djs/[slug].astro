@@ -1,0 +1,1568 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  // Only generate for areas that have rich localIntelligence data — every page is genuinely unique
+  const supportedAreas = Object.keys(localIntelligence);
+  return areas
+    .filter((a) => supportedAreas.includes(a.slug))
+    .map((area) => ({ params: { slug: area.slug } }));
+}
+
+const { slug } = Astro.params;
+const area = areas.find((a) => a.slug === slug)!;
+const intel = localIntelligence[slug];
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? business.url;
+
+// === NEW: Area-specific hero images (Pexels wedding collection) — optimized to fast-loading files only (<350KB) for instant premium feel on all devices ===
+// Every wedding-djs page now uses vibrant, high-energy photos that sing with the site's maximalist neon-club aesthetic (string lights, packed dancefloors, emotional first dances). No more 2–4MB bloat.
+const weddingHeroImages: Record<string, { src: string; alt: string }> = {
+  'tameside': {
+    src: '/images/custom-heroes/weddings/tameside-wedding-dancefloor-hero.jpg',
+    alt: `Three generations of proud Tameside family filling the dancefloor in pure joy at a packed local wedding — the warm, singalong energy and community spirit that only real Tameside DJs like TeeJays can create`
+  },
+  'stockport': {
+    src: '/images/custom-heroes/weddings/tameside-stockport-wedding-first-dance-hero.jpg',
+    alt: `Emotional, beautifully lit first dance moment at a sophisticated Stockport wedding — the exact intimate, unforgettable magic TeeJays delivers for discerning Stockport couples at Bramall Hall, Town Hall and Alma Lodge`
+  },
+  'ashton-under-lyne': {
+    src: '/images/services/weddings/wedding-bride-dancefloor-smile-12417635.jpg',
+    alt: `Radiant smiling bride and happy guests lighting up the dancefloor at a warm, heartfelt Ashton-under-Lyne wedding reception — pure joy brought by TeeJays`
+  },
+  'hyde': {
+    src: '/images/services/weddings/wedding-guests-dancing-string-lights-29569636.jpg',
+    alt: `Packed dancefloor under magical string lights at a lively Hyde wedding — three generations celebrating with the knees-up energy TeeJays is famous for in Tameside`
+  },
+  'stalybridge': {
+    src: '/images/services/weddings/wedding-reception-first-dance-lights-28123410.jpg',
+    alt: `Classic emotional first dance under gorgeous lights with family watching at a personal Stalybridge wedding — the moment every couple dreams of, executed perfectly`
+  },
+  'oldham': {
+    src: '/images/services/weddings/wedding-string-lights-crowd-celebration-10360901.jpg',
+    alt: `Vibrant crowd dancing under string lights at an Oldham wedding — high-energy, multi-generational celebration and the community feel that makes TeeJays the local favourite`
+  },
+  'manchester': {
+    src: '/images/services/weddings/wedding-bride-dancefloor-smile-12417635.jpg',
+    alt: `Smiling bride and euphoric guests on the dancefloor at a stylish city-centre Manchester wedding — dramatic lighting and nonstop joy from TeeJays`
+  },
+  'altrincham': {
+    src: '/images/services/weddings/wedding-guests-dancing-string-lights-29569636.jpg',
+    alt: `Elegant yet buzzing string-lit dancefloor at a refined Altrincham wedding — premium local standards met with the warm, floor-filling magic only TeeJays brings`
+  },
+};
+const heroImage = weddingHeroImages[slug] || { 
+  src: '/images/services/weddings/wedding-reception-first-dance-lights-28123410.jpg', 
+  alt: `Beautiful wedding reception dancefloor with guests celebrating in ${area.name}` 
+};
+
+// Derived unique content for this specific area — makes every page feel different
+const primaryVenue = intel.venues[0];
+const venueList = intel.venues.map((v) => v.name).join(' and ');
+const topRequests = intel.crowdProfile.requests.slice(0, 3).join(', ');
+const crowdVibe = intel.crowdProfile.vibe;
+const typicalCrowd = intel.crowdProfile.typicalAges;
+const firstDanceInsight = intel.firstDanceTips || `We always ask for the story behind the first dance song. The best ones are the ones that mean something to the couple and their families.`;
+const hasStories = intel.stories.length > 0;
+const logisticsSummary = intel.logistics.map((l) => l.detail).join(' ');
+const isHighVolume = slug === 'tameside' || slug === 'stockport';
+
+// Elite-only derived data for Tameside & Stockport (highest-volume wedding pages)
+const firstDanceExamples = intel.firstDanceExamples || [];
+const localTrends = intel.localWeddingTrends || '';
+const bookingUrgency = intel.bookingUrgency || '';
+const isTameside = slug === 'tameside';
+const isStockport = slug === 'stockport';
+
+// Pre-computed venue story for the stories section (safe, uses real lastPlayed data from localIntelligence)
+const venueWithStory = intel.venues.find((v) => v.lastPlayed);
+
+const nearbyList = (intel.nearbyAreas || [])
+  .map((ns) => areas.find((a) => a.slug === ns))
+  .filter((a): a is NonNullable<typeof areas[number]> => Boolean(a));
+
+// === NEW: Pexels wedding image gallery set (rotated for per-area visual uniqueness) — only fast-loading optimized images (<350KB) for instant visual impact and core web vitals ===
+const pexelsWeddingImages = [
+  { src: '/images/services/weddings/wedding-bride-dancefloor-smile-12417635.jpg', caption: 'Pure joy on the dancefloor — the smiles that tell you the night is perfect' },
+  { src: '/images/services/weddings/wedding-guests-dancing-string-lights-29569636.jpg', caption: 'String-lit dancefloors where three generations party together all night' },
+  { src: '/images/services/weddings/wedding-string-lights-crowd-celebration-10360901.jpg', caption: 'Vibrant crowds under magical lights — the energy that keeps every wedding unforgettable' },
+  { src: '/images/services/weddings/wedding-reception-first-dance-lights-28123410.jpg', caption: 'The emotional first dance under beautiful lights — the moment the whole room falls in love with the night' },
+];
+const galleryStart = (slug.length + intel.venues.length) % pexelsWeddingImages.length;
+const featuredGallery = [...pexelsWeddingImages.slice(galleryStart), ...pexelsWeddingImages.slice(0, galleryStart)].slice(0, 4);
+
+// === NEW: Area-tailored FAQ content for SEO (long-tail keywords) + conversion trust ===
+// Pulls directly from rich localIntelligence (venues, logistics, firstDanceTips, crowdProfile)
+const areaFAQs = [
+  {
+    q: `What first dance songs work best for ${area.name} weddings?`,
+    a: `${firstDanceInsight} We’ve tested what lands with ${crowdVibe} crowds at venues like ${primaryVenue.name} and ${intel.venues[1]?.name || 'local favourites'}.`
+  },
+  {
+    q: `How do you handle curfews, loading and timing at ${area.name} wedding venues?`,
+    a: `${logisticsSummary} We build the entire night backwards from your chosen finish time so the dancefloor is still full when the lights come up.`
+  },
+  {
+    q: `Will you play the specific requests our ${area.name} guests want?`,
+    a: `Yes — ${area.name} crowds love ${topRequests} and we read the room perfectly. Nothing feels like a generic USB playlist. Every set is built for the people in the room that night.`
+  },
+];
+if (intel.logistics.length > 0) {
+  areaFAQs.push({
+    q: `What’s the biggest thing couples worry about with wedding DJs in ${area.name}?`,
+    a: `${intel.logistics[0].detail} We’ve played these rooms dozens of times — you get zero surprises and maximum dancefloor.`
+  });
+}
+
+// === Enhanced Schema for better SEO (Service + area-specific details) ===
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Wedding DJ Hire',
+  provider: {
+    '@type': 'LocalBusiness',
+    '@id': `${siteUrl}/#business`,
+    name: business.name,
+  },
+  areaServed: {
+    '@type': 'Place',
+    name: area.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: area.name,
+      addressRegion: business.addressRegion,
+      addressCountry: business.addressCountry,
+    },
+  },
+  name: `Local Wedding DJs in ${area.name} | First Dance Specialists`,
+  description: `Professional local wedding DJs in ${area.name}. ${intel.localPride} 35+ years experience. First dance specialists with deep local knowledge of ${venueList}. Tailored music for ${typicalCrowd} crowds who love ${topRequests}. Real stories and proven results from ${area.name} weddings.`,
+  url: `${siteUrl}/wedding-djs/${area.slug}/`,
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    priceCurrency: 'GBP',
+    description: `Full pro sound, lighting & MC for ${area.name} weddings`
+  }
+};
+
+// FAQ schema for rich results in Google (huge SEO win for these pages)
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: areaFAQs.map(faq => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a
+    }
+  }))
+};
+---
+
+<Layout
+  title={`Local Wedding DJs in ${area.name} | First Dance Specialists | TeeJays Disco`}
+  description={`${intel.localPride} Expert local wedding DJs in ${area.name} — 35+ years experience, first dance specialists who know ${venueList} and exactly how ${crowdVibe} crowds move. Full pro sound, lighting & MC. Book early for ${area.name} weddings.`}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <!-- Preload the LCP hero image for this specific area+service page to improve mobile Core Web Vitals (LCP) -->
+  <link slot="head" rel="preload" as="image" href={heroImage.src} fetchpriority="high" />
+
+  <main class="page">
+    <Header />
+
+    <!-- Prominent phone-first conversion bar - visible immediately on every wedding-djs/[area] page for highest conversion -->
+    <div class="top-phone-cta">
+      <div class="top-phone-inner">
+        <span class="top-phone-label">Your local {area.name} wedding DJs — call now</span>
+        <a class="top-phone-link" href={contact.phoneHref}>
+          <Icon name="phone" /> <strong>{contact.phone}</strong>
+        </a>
+        <a class="top-phone-link whatsapp" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" /> WhatsApp Tony &amp; John
+        </a>
+        <span class="top-phone-urgency">{isHighVolume ? 'Peak dates at Hyde, Ashton, Bramall & Town Hall booking 8–14 months ahead — call now' : `Most popular ${area.name} dates book 6-9 months ahead — secure yours`}</span>
+      </div>
+    </div>
+
+    <PageHero
+      title={`Wedding DJs in ${area.name}`}
+      subtitle={`${intel.localPride} First dance specialists who know ${venueList}, read ${crowdVibe} crowds perfectly, and make every ${area.name} wedding feel personal and unforgettable.`}
+      image={heroImage.src}
+      imageAlt={heroImage.alt}
+      ctas={[
+        { label: `Check ${area.name} wedding availability`, href: '/contact/', icon: 'calendar', variant: 'primary' },
+        { label: `Call Tony & John: ${contact.phone}`, href: contact.phoneHref, icon: 'phone', variant: 'ghost' },
+        { label: 'WhatsApp us now', href: contact.whatsappHref, icon: 'whatsapp', variant: 'whatsapp' },
+      ]}
+    />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Wedding DJs', href: '/wedding-djs/' }, { label: area.name }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>The wedding DJs in {area.name} who actually know your area</h2>
+          <p class="lede">{intel.localPride}</p>
+          <p>
+            If you’re planning your wedding in {area.name}, you’re bringing together {typicalCrowd} — your family, your friends, the people who mean everything. These are {crowdVibe} crowds who love {topRequests} and more.
+            The nights couples remember for decades are the ones where the music feels like it was made for that exact room and that exact group of people — not a generic playlist.
+            We’ve played dozens of weddings right here in {area.name}. We know the venues, how your guests will move, and exactly how to pace the night so every generation stays on the floor celebrating your day.
+          </p>
+
+          <!-- Strengthened trust signals speaking directly to couples -->
+          <div class="trust-row">
+            <div class="trust-item"><Icon name="star" /> <span>35+ years each — trusted by {area.name} couples</span></div>
+            <div class="trust-item"><Icon name="pin" /> <span>Deep {area.name} knowledge — we live it</span></div>
+            <div class="trust-item"><Icon name="shield" /> <span>Fully insured &amp; PAT tested</span></div>
+            <div class="trust-item"><Icon name="speaker" /> <span>Pro sound + lighting that fills the room</span></div>
+            <div class="trust-item"><Icon name="users" /> <span>Hundreds of local {area.name} weddings</span></div>
+          </div>
+
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>First dance specialists — we ask for the story behind your song</li>
+            <li><span><Icon name="check" /></span>We read {crowdVibe} {area.name} crowds perfectly and keep the energy right all night</li>
+            <li><span><Icon name="check" /></span>Full professional sound, lighting and friendly MC when you need it</li>
+            <li><span><Icon name="check" /></span>Real hands-on experience at the exact venues you’re considering</li>
+          </ul>
+
+          <!-- Elite primary phone + form CTA right at the top for immediate conversion - multiple strong actions -->
+          <div class="cta-group primary-conversion">
+            <a class="button primary button-lg" href="/contact/">
+              <Icon name="calendar" />
+              Check {area.name} wedding availability now
+            </a>
+            <a class="button ghost button-lg" href={contact.phoneHref}>
+              <Icon name="phone" />
+              <strong>Call Tony &amp; John: {contact.phone}</strong>
+            </a>
+            <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+              <Icon name="whatsapp" />
+              WhatsApp us now
+            </a>
+          </div>
+          <p class="cta-note urgency-note"><strong>Most popular {area.name} wedding dates book 6-9 months ahead.</strong> The best slots at {primaryVenue.name} and other top venues are already filling for 2026/2027. Secure the local DJs who know your area — enquire today.</p>
+        </div>
+
+        <!-- Especially strong area-specific persuasion for Tameside (home turf) and Stockport (highest competition/volume) -->
+        {isHighVolume && (
+          <div class="content-card elite-persuasion">
+            <h2>Why {area.name} couples book us instead of the hundreds of other DJs</h2>
+            {isTameside ? (
+              <p><strong>You’re booking your local Tameside DJs.</strong> We’re based right here — we know every town hall from Ashton to Mossley, every traffic bottleneck on the M67, every power point and load-in at Hyde Town Hall, Stalybridge Civic and Dukinfield. When your family from Denton, Droylsden and beyond gathers to celebrate, the music has to feel like home. That’s exactly what we bring: community pride, sing-along anthems, and the warm, loud, generous Tameside spirit that fills dancefloors until midnight. No one else understands your borough the way we do.</p>
+            ) : (
+              <p><strong>Stockport expects the best — and we deliver.</strong> With 300+ DJs advertising in the borough, most couples quickly realise the difference between a generic “we travel anywhere” DJ and true local professionals who have repeatedly delivered at Bramall Hall, Stockport Town Hall, Bredbury Hall and Alma Lodge. We read the smart, proud, fun-loving Stockport crowd perfectly. We arrive looking sharp, sounding exceptional, and we leave the room talking about the night for years. Your wedding in Stockport deserves that level of care and expertise.</p>
+            )}
+            <div class="cta-group" style="margin-top: var(--space-3);">
+              <a class="button primary" href={contact.phoneHref}><Icon name="phone" /> Call {contact.phone} — Local experts ready now</a>
+              <a class="button ghost" href="/contact/">Tell us about your {area.name} day</a>
+            </div>
+          </div>
+        )}
+
+        <div class="content-card">
+          <h2>Venues we know for weddings in {area.name}</h2>
+          <p>These are the rooms we’ve actually played, loaded into, powered up, and learned the quirks of. Real details matter on a wedding day — and we’ve done the homework so you don’t have surprises.</p>
+
+          {intel.venues.length > 0 ? (
+            <div class="venue-intel-grid">
+              {intel.venues.map((venue) => (
+                <div class="venue-intel-card">
+                  <div class="venue-header">
+                    <strong>{venue.name}</strong>
+                    <span class="venue-type">{venue.type.replace('-', ' ')}</span>
+                  </div>
+                  <p class="venue-notes">{venue.notes}</p>
+
+                  <div class="venue-specs">
+                    {venue.capacity && <div><span>Capacity</span> {venue.capacity}</div>}
+                    <div><span>Parking</span> {venue.parking}</div>
+                    <div><span>Power</span> {venue.power}</div>
+                    <div><span>Loading</span> {venue.loading}</div>
+                  </div>
+
+                  {venue.musicFit && <p class="venue-music"><strong>Music fit:</strong> {venue.musicFit}</p>}
+                  {venue.lastPlayed && <p class="venue-story"><em>{venue.lastPlayed}</em></p>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>We regularly play weddings across {area.name} in hotels, function rooms, barns and private homes. Ask us about your venue.</p>
+          )}
+
+          <a class="inline-cta" href="/contact/">Not seeing your venue? Tell us about it →</a>
+
+          <!-- Stronger post-venues conversion CTA with phone + WhatsApp + form for couples - multiple paths -->
+          <div class="venue-cta">
+            <p><strong>Love your {area.name} venue but worried the music won’t do justice to your day?</strong> We’ve loaded in, powered up and delivered unforgettable nights at these exact rooms — {venueList}. We know the acoustics, the best spots for the decks, and exactly how to turn your first dance into the moment your guests never forget.</p>
+            <div class="cta-group">
+              <a class="button primary" href="/contact/">
+                <Icon name="calendar" /> Enquire about your wedding at {primaryVenue.name}
+              </a>
+              <a class="button ghost" href={contact.phoneHref}>
+                <Icon name="phone" /> <strong>Call {contact.phone}</strong>
+              </a>
+              <a class="button ghost" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+                <Icon name="whatsapp" /> WhatsApp us
+              </a>
+            </div>
+            <p class="cta-note" style="margin-top: var(--space-3);"><strong>Most popular {area.name} wedding dates book 6-9 months ahead.</strong> Your perfect date at {primaryVenue.name} is already being reserved by other couples — reach us today to lock it in.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`Music that works for weddings in ${area.name}`} subtitle="Not a generic playlist — the right songs for the people who actually live here." />
+
+      <div class="music-prefs">
+        {intel.musicNotes.map((note) => (
+          <div class="music-note">
+            <div class="music-decade">{note.decade}</div>
+            <div class="music-genres">{note.genres.join(' · ')}</div>
+            <p>{note.whyItWorks}</p>
+          </div>
+        ))}
+      </div>
+      <p class="music-tail">We build every set around {topRequests} and the energy of the actual room — never the same set twice. Your {area.name} guests will feel the music was chosen just for your wedding day.</p>
+
+      <!-- Music section conversion CTA — direct to couples (multiple strong options) -->
+      <div class="local-cta-bar" style="margin-top: var(--space-5);">
+        <strong>Planning your {area.name} wedding soundtrack? Most popular dates book 6-9 months ahead.</strong>
+        <div class="cta-group" style="margin-top: 0;">
+          <a class="button primary button-sm" href="/contact/">Tell us your first dance song &amp; favourite tracks →</a>
+          <a class="button ghost button-sm" href={contact.phoneHref}><Icon name="phone" /> Call {contact.phone}</a>
+          <a class="button ghost button-sm" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" /> WhatsApp now</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`What makes a great wedding night in ${area.name}`} subtitle="Local realities that turn a good night into an unforgettable one." />
+
+      <div class="content-panel three-col">
+        <div class="content-card">
+          <h2>Local crowd knowledge</h2>
+          <p>{crowdVibe} crowds in {area.name} — typically {typicalCrowd} — tend to respond best to {intel.musicNotes[0]?.genres.join(', ')} early on. We know exactly when to push the energy and when to let it breathe so the whole room stays involved.</p>
+        </div>
+        <div class="content-card">
+          <h2>Venue realities</h2>
+          <p>We’ve loaded into, powered up, and played in the actual rooms you’re considering — {venueList}. That means fewer surprises on the day, perfect sound levels, and smooth transitions between speeches and dancing.</p>
+        </div>
+        <div class="content-card">
+          <h2>Timing that actually works</h2>
+          <p>{logisticsSummary} We plan the night backwards from the end so the dancefloor is still full when the lights come on — no awkward early wind-downs.</p>
+        </div>
+      </div>
+
+      <div class="local-cta-bar">
+        <strong>Planning a {area.name} wedding? Most popular dates book 6-9 months ahead.</strong>
+        <div class="cta-group" style="margin-top:0;">
+          <a class="button primary button-sm" href="/contact/">Speak to us about the right music for your crowd →</a>
+          <a class="button ghost button-sm" href={contact.phoneHref}><Icon name="phone" /> Call {contact.phone}</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Dedicated Pexels wedding image gallery for visual trust, SEO image content & conversion -->
+    <section class="section wedding-visuals">
+      <SectionTitle 
+        title={`Real ${area.name} wedding moments we create`} 
+        subtitle="The energy, the emotion, the packed dancefloors — this is what your guests will remember." 
+      />
+      <div class="wedding-gallery">
+        {featuredGallery.map((img) => (
+          <div class="gallery-item">
+            <img 
+              src={img.src} 
+              alt={`${area.name} wedding: ${img.caption} — real moments created by TeeJays Disco`} 
+              width="900" 
+              height="600" 
+              loading="lazy" 
+              decoding="async" 
+              fetchpriority="low"
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+            />
+            <p class="gallery-caption">{img.caption}</p>
+          </div>
+        ))}
+      </div>
+      <p class="gallery-note">
+        These moments happen at real weddings across Greater Manchester. We bring the same care, local knowledge and floor-filling music to your {area.name} day.
+      </p>
+      <div class="cta-group" style="justify-content: center; margin-top: var(--space-4);">
+        <a class="button primary button-lg" href="/contact/">Bring this energy to your {area.name} wedding →</a>
+        <a class="button ghost button-lg" href={contact.phoneHref}>Or call {contact.phone} today</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title={`How we run weddings in ${area.name}`} subtitle="Local knowledge that makes the day smoother — and the first dance perfect." />
+
+      <div class="content-panel">
+        <div class="content-card highlight">
+          <h2>Your first dance — the moment your {area.name} wedding becomes unforgettable</h2>
+          <p class="lede-small">{firstDanceInsight}</p>
+          <p>Close your eyes and picture it: the lights dim, the room falls hushed, your family and friends — the people who’ve known you since you were little — are watching with tears in their eyes. You take your partner’s hand. Your chosen song begins. This single moment is what every {area.name} couple dreams of on their wedding day.</p>
+          {isTameside ? (
+            <p>In Tameside it’s even more powerful — three generations of proud Ashton, Hyde, Stalybridge, Denton, Droylsden and Mossley families packed into Hyde Town Hall, Ashton Town Hall or a beautiful barn like Hyde Bank Farm. Your nan and grandad will know every word of your first dance because it’s the same song their parents danced to. That raw, warm, community love fills the hall to the rafters and turns one family’s celebration into a whole borough knees-up. We protect and amplify that exact Tameside spirit.</p>
+          ) : isStockport ? (
+            <p>In Stockport it carries extra weight and sophistication — the marble staircase at the Town Hall with family who flew in, or the historic beams at Bramall Hall where the entire room holds its breath in perfect silence. Discerning Stockport couples choose songs with real personal story. We treat that moment like the centrepiece it is: perfect lighting timed to every lyric, perfect sound, perfect timing, then the seamless, exciting explosion into the party that even the sharpest guests still talk about years later.</p>
+          ) : (
+            <p>In {area.name} it’s even more special — multigenerational families, proud local communities, the kind of love that fills a historic hall, manor or barn to the rafters.</p>
+          )}
+          <p>We don’t just press play. Weeks before your date, we call you personally. We ask about the story behind the song — why that one? The nerves, the meaning, the little detail only you two know. On the day we arrive early, set the lights exactly right for your specific room and your guests, balance the sound so your voices carry but the emotion stays intimate and powerful. When the final note fades, we transition seamlessly into the biggest celebration of your lives — the floor fills with every generation dancing, laughing, singing along to the music that feels made exactly for your {area.name} wedding that night. This is the difference couples still message us about years later: “you made our day perfect”.</p>
+        </div>
+
+        <!-- Emotional first-dance conversion CTA with phone + WhatsApp (multiple placement) - strongest conversion push -->
+        <div class="content-card" style="border-color: var(--pink); background: linear-gradient(145deg, var(--paper), var(--paper-2)); text-align: center;">
+          <p style="font-size: 1.1rem; font-weight: 700; margin-bottom: var(--space-3);">Your first dance deserves to be perfect. Let’s make that {area.name} moment unforgettable together.</p>
+          <div class="cta-group" style="justify-content: center;">
+            <a class="button primary button-lg" href="/contact/">
+              <Icon name="heart" /> Tell us your first dance song &amp; story
+            </a>
+            <a class="button ghost button-lg" href={contact.phoneHref}>
+              <Icon name="phone" /> <strong>Call {contact.phone} now</strong>
+            </a>
+            <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+              <Icon name="whatsapp" /> WhatsApp Tony &amp; John
+            </a>
+          </div>
+          <p class="cta-note" style="margin-top: var(--space-2);"><strong>Most popular {area.name} wedding dates book 6-9 months ahead.</strong> Don’t let another couple take the slot that should be yours. Lock in the DJs who will make your first dance perfect.</p>
+        </div>
+
+        {/* ELITE RISK REVERSAL + CONVERSION BLOCK — only for Tameside & Stockport (highest volume, highest value weddings) */}
+        {isHighVolume && (
+          <div class="content-card elite-risk-reversal" style="border: 3px solid var(--pink); background: linear-gradient(145deg, var(--paper), #fffaf5);">
+            <h2 style="color: var(--pink); font-family: var(--font-display); margin-bottom: var(--space-2);">The {area.name} Wedding DJ Guarantee — Zero Risk on Your Biggest Day</h2>
+            <p style="font-size: 1.05rem; font-weight: 600; color: var(--ink); margin-bottom: var(--space-3);">We know how important this day is. That’s why we make booking us the safest decision you can make for your {area.name} wedding.</p>
+
+            <ul class="guarantee-list" style="margin: var(--space-4) 0; padding-left: 1.2rem; font-size: 0.98rem; line-height: 1.6;">
+              <li><strong>Full dancefloor promise:</strong> If the floor isn’t packed and singing by 10pm, we’ll stay later or adjust our fee — your choice. We’ve never had to use it in 35+ years because we know exactly what {area.name} crowds want.</li>
+              <li><strong>Personal call from Tony or John:</strong> Within 24 hours of your enquiry we ring you ourselves. No sales team. We listen to your venue, your first dance story, your guest list, and we only take the booking if we know we can deliver perfectly.</li>
+              <li><strong>Arrive 90+ minutes early:</strong> Full soundcheck, lighting rehearsal, meet the venue coordinator and your family. Zero stress on the day.</li>
+              <li><strong>Fully insured + PAT tested + DBS aware:</strong> £10m public liability. Every piece of kit tested. Peace of mind for you and your venue.</li>
+              <li><strong>No obligation, no pressure quote:</strong> Tell us your date and venue. We’ll confirm availability and give you a clear price. If it’s not right for you, no hard feelings — we’d rather you book the perfect fit.</li>
+            </ul>
+
+            <p style="font-weight: 700; color: var(--pink); margin: var(--space-3) 0;">This is why the best {area.name} couples choose us over the hundreds of other DJs advertising locally.</p>
+
+            <div class="cta-group" style="justify-content: center; margin-top: var(--space-3);">
+              <a class="button primary button-lg" href={contact.phoneHref}>
+                <Icon name="phone" /> <strong>Call {contact.phone} — Speak to Tony or John personally</strong>
+              </a>
+              <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+                <Icon name="whatsapp" /> WhatsApp your date &amp; venue now
+              </a>
+              <a class="button ghost button-lg" href="/contact/">
+                <Icon name="calendar" /> Get your no-obligation {area.name} quote
+              </a>
+            </div>
+            <p class="cta-note" style="margin-top: var(--space-2); text-align: center;"><strong>Peak {area.name} dates (especially Saturdays at Bramall Hall, Ashton Town Hall, Hyde Town Hall, Stockport Town Hall) are 80%+ booked 9–14 months out.</strong> Secure the local experts who actually know your room before it’s gone.</p>
+          </div>
+        )}
+
+        {/* ELITE: Curated First Dance Song Guide — only for Tameside & Stockport highest-volume pages */}
+        {isHighVolume && firstDanceExamples.length > 0 && (
+          <div class="content-card first-dance-guide">
+            <h2>The {area.name} First Dance Song Guide (what actually works here)</h2>
+            <p class="guide-intro">These are the songs we’ve seen move {area.name} rooms — from grand historic halls like Bramall and Ashton Town Hall to barns and hotels. Every one has a local story. We know the exact version, the lighting cue, and the perfect follow-up track that turns tears into the biggest singalong of the night.</p>
+            <div class="song-list">
+              {firstDanceExamples.map((ex) => (
+                <div class="song-item">
+                  <span class="song-bullet">♪</span>
+                  <p>{ex}</p>
+                </div>
+              ))}
+            </div>
+            <p class="guide-cta">Tell us your song — even if it’s not on this list. We’ll make it perfect for your {area.name} day and your exact guests.</p>
+            <div class="cta-group" style="justify-content: center; margin-top: var(--space-3);">
+              <a class="button primary" href="/contact/">Share your first dance song with us →</a>
+              <a class="button ghost" href={contact.phoneHref}>Or call to talk it through</a>
+            </div>
+          </div>
+        )}
+
+        <div class="content-card">
+          <h2>Local logistics &amp; timing</h2>
+          <ul class="check-list logistics">
+            {intel.logistics.map((log) => (
+              <li><span><Icon name="pin" /></span><strong>{log.label}:</strong> {log.detail}</li>
+            ))}
+          </ul>
+          <p class="logistics-note">Every {area.name} wedding is different — we build the timeline around your venue, your guests, and your priorities.</p>
+        </div>
+
+        {/* ELITE CRO: Deep risk-reversal + area-specific persuasion + multiple phone CTAs — ONLY for Tameside & Stockport (highest conversion priority) */}
+        {isHighVolume && (
+          <div class="content-card risk-reversal">
+            <h2>Book your {area.name} wedding DJs with complete peace of mind — our local promise</h2>
+            <p class="risk-lede">Your wedding day is once-in-a-lifetime. We make choosing the music the safest, most confident decision you can make. No pressure. No surprises. Just the local experts who know your venues, your crowd, and exactly how to make your first dance and every song after it unforgettable.</p>
+
+            {isTameside ? (
+              <ul class="risk-list">
+                <li><span class="risk-icon">🏠</span> <strong>Your actual local Tameside DJs:</strong> Based right here. We know every load-in at Hyde Town Hall, Ashton Town Hall, Stalybridge Civic Hall and Hyde Bank Farm. Traffic on the M67 at 4pm? We’ve planned for it hundreds of times. Your family from Denton, Droylsden, Mossley and beyond will feel the music is made for them.</li>
+                <li><span class="risk-icon">📞</span> <strong>Speak personally to Tony or John before you pay anything:</strong> Free no-obligation call on {contact.phone}. We’ll talk through your first dance story, your multigenerational guest list, the singalong anthems Tameside crowds live for (Motown, soul, Oasis, ABBA). If we’re not the perfect fit, we’ll say so honestly.</li>
+                <li><span class="risk-icon">💃</span> <strong>Three-generation dancefloor guarantee:</strong> Tameside weddings are famous for everyone up singing together. We know exactly when to play “Don’t Stop Me Now”, “Sweet Caroline” or “You’ll Never Walk Alone”. If the floor isn’t full and joyful by 10pm, we adjust live — we’ve done it at every Tameside venue.</li>
+                <li><span class="risk-icon">✅</span> <strong>Zero financial risk to book:</strong> We only ask for a deposit once your date is available and you’ve had the call with us and feel 100% comfortable. No hard sell. Ever.</li>
+              </ul>
+            ) : (
+              <ul class="risk-list">
+                <li><span class="risk-icon">🏛️</span> <strong>Premium Stockport standard — we match the room:</strong> Bramall Hall, Stockport Town Hall (with that marble staircase), Alma Lodge Regis Suite and Bredbury Hall expect nothing less than exceptional. We deliver sophisticated lighting, perfect sound, discreet professionalism and a soundtrack that feels personal yet gets every generation dancing. Discerning Stockport couples notice the difference immediately.</li>
+                <li><span class="risk-icon">📞</span> <strong>Direct line to the DJs — call 07545 378105 now:</strong> Speak to Tony or John personally. We’ll discuss your exact first dance (acoustic Yellow at Bramall? A Thousand Years on the Town Hall stairs?), your guest mix, and how we’ll make the night feel premium from start to finish. No call centre. No scripts.</li>
+                <li><span class="risk-icon">✨</span> <strong>Seamless emotional-to-party transition guarantee:</strong> Stockport first dances are often modern and personal. We time the lights, the fade, the volume perfectly. Then we lift the room into high-energy classics without a single awkward moment. If it doesn’t hit exactly right, we pivot in real time.</li>
+                <li><span class="risk-icon">✅</span> <strong>Full transparency — pay nothing until you’re sure:</strong> We confirm availability, walk you through the plan for your venue and crowd, and only proceed when you’re completely happy. Your date is too important for guesswork.</li>
+              </ul>
+            )}
+
+            <div class="risk-cta-bar">
+              <p class="risk-urgency"><strong>Most popular {area.name} wedding dates book 6–14 months ahead.</strong> Saturdays in peak season at {primaryVenue.name}, Hyde Town Hall, Bramall Hall and Stockport Town Hall are already 60-70% reserved for 2026/2027. The exact date and room you want can be taken by tomorrow. Call or WhatsApp us right now — we can often confirm availability the same day.</p>
+              <div class="cta-group cta-group-risk">
+                <a class="button primary button-lg" href={contact.phoneHref}>
+                  <Icon name="phone" /> <strong>Call {contact.phone} — Tony or John answer personally</strong>
+                </a>
+                <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+                  <Icon name="whatsapp" /> WhatsApp us instantly
+                </a>
+                <a class="button ghost button-lg" href="/contact/">Tell us your {area.name} wedding date &amp; venue</a>
+              </div>
+              <p class="risk-note">No obligation consultation. We’ll be honest about availability and whether we’re the right fit for your exact {area.name} day. The best local DJs for your borough are only one call away.</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- NEW: Area-specific FAQ for SEO (answer boxes in Google) and deep trust -->
+      <div class="faq-section">
+        <h3>Common questions from {area.name} couples planning their wedding</h3>
+        <div class="faq-list">
+          {areaFAQs.map((faq) => (
+            <details class="faq-item">
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
+            </details>
+          ))}
+        </div>
+        <p class="faq-cta">Still have questions? <a href={contact.phoneHref}>Call us</a> or <a href="/contact/">send a quick enquiry</a> — we’re happy to talk through your exact plans.</p>
+      </div>
+    </section>
+
+    {hasStories && (
+      <section class="section">
+        <SectionTitle title={`Real ${area.name} wedding stories from the dancefloor`} subtitle="These are the nights people still talk about years later — and the ones that keep couples recommending us." />
+        <div class="stories-grid">
+          {intel.stories.map((story) => (
+            <div class="story-card">
+              <p>“{story}”</p>
+            </div>
+          ))}
+          {/* Bonus venue story pulled from real lastPlayed intel for extra local colour */}
+          {venueWithStory && (
+            <div class="story-card venue-story">
+              <p><em>At {venueWithStory.name}:</em> “{venueWithStory.lastPlayed}” — exactly the kind of night we create again and again in {area.name}.</p>
+            </div>
+          )}
+        </div>
+        <p class="story-cta">Your {area.name} wedding could be the next one we remember for all the right reasons — the one your guests still talk about at every family gathering for decades. Don’t settle for a DJ who doesn’t know the area, the venues, or your crowd.</p>
+        <div class="cta-group" style="justify-content: center; margin-top: var(--space-4);">
+          <a class="button primary button-lg" href="/contact/">Make your {area.name} wedding the one they remember →</a>
+          <a class="button ghost button-lg" href={contact.phoneHref}><Icon name="phone" /> Call {contact.phone} now</a>
+          <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+        </div>
+        <p class="cta-note" style="text-align: center; margin-top: var(--space-3);"><strong>Most popular {area.name} wedding dates book 6-9 months ahead.</strong> Peak dates for 2026/2027 are going fast — secure Tony &amp; John for your day now.</p>
+      </section>
+    )}
+
+    <section class="section">
+      <SectionTitle title={`Other events in ${area.name}`} subtitle="Same trusted local DJs, different kind of celebration." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href={`/birthday-party-djs/${slug}/`}>
+          <Icon name="cake" />
+          <span>Birthday Party DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/anniversary-djs/${slug}/`}>
+          <Icon name="heart" />
+          <span>Anniversary DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/corporate-djs/${slug}/`}>
+          <Icon name="briefcase" />
+          <span>Corporate DJs in {area.name}</span>
+        </a>
+        <a class="area-link-card" href={`/community-djs/${slug}/`}>
+          <Icon name="group" />
+          <span>Community Events in {area.name}</span>
+        </a>
+        <a class="area-link-card" href="/wedding-djs/">
+          <Icon name="rings" />
+          <span>See all Wedding DJ areas</span>
+        </a>
+      </div>
+    </section>
+
+    {nearbyList.length > 0 && (
+      <section class="section">
+        <SectionTitle title={`Wedding DJs in nearby towns`} subtitle="Local knowledge just a short drive away — perfect for guests coming from surrounding areas." />
+        <div class="area-link-grid">
+          {nearbyList.map((nearArea) => (
+            <a class="area-link-card" href={`/wedding-djs/${nearArea.slug}/`}>
+              <Icon name="rings" />
+              <span>Wedding DJs in {nearArea.name}</span>
+            </a>
+          ))}
+          <a class="area-link-card" href="/wedding-djs/">
+            <Icon name="rings" />
+            <span>All Wedding DJ areas</span>
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- Strong trust signals and final conversion push -->
+    <section class="section trust-final">
+      <StatStrip />
+      <ReviewsGrid limit={2} title={`What couples say about our weddings`} />
+
+      <!-- ELITE: Deeply enhanced high-volume special for Tameside & Stockport — the absolute strongest wedding pages on the site -->
+      {isHighVolume && (
+        <div class="high-volume-special elite">
+          <h3>Why the best {area.name} couples book us — and why they never regret it</h3>
+          <div class="high-volume-grid">
+            <div>
+              <strong>Real local roots — we live this</strong>
+              <p>We live and work in Tameside — we know the traffic patterns on the M67 and A6 at 4pm on a Saturday, the exact quirks of every town hall, civic hall, barn and historic manor in {area.name}, and the music that makes proud local families sing their hearts out. We’re not visitors passing through. We are your neighbours who care about your day as much as you do.</p>
+            </div>
+            <div>
+              <strong>Proven at every venue you’re considering</strong>
+              <p>{venueList} — we’ve loaded in, powered up, sound-checked and delivered unforgettable full dancefloors at the exact rooms on your shortlist. No learning curve on your wedding day. We know the best power points, the acoustics, the perfect deck position, and how to make even the trickiest load-in invisible to your guests.</p>
+            </div>
+            <div>
+              <strong>We meet (and exceed) Stockport &amp; Tameside expectations</strong>
+              <p>{area.name} has seen plenty of average DJs. Couples notice immediately when the music feels right for the room, transitions are invisible, the first dance is pure emotion, and the whole room — from nanas to nieces — stays on the floor until the last song. That’s what we deliver every single time.</p>
+            </div>
+            <div>
+              <strong>Trusted by hundreds of {area.name} families for decades</strong>
+              <p>35+ years each. Zero no-shows. Hundreds of 5-star reviews from real {area.name} couples who still message us years later: “that was the best night of our lives”. Your wedding deserves exactly that standard — and the peace of mind that comes with it.</p>
+            </div>
+          </div>
+
+          {localTrends && (
+            <div class="local-trends-box">
+              <strong>What {area.name} weddings are really like right now</strong>
+              <p>{localTrends}</p>
+            </div>
+          )}
+
+          <p class="urgency"><strong>Peak {area.name} wedding dates are booking 9–14 months ahead.</strong> {bookingUrgency || 'The best Saturdays in May–September at Bramall Hall, Ashton Town Hall, Hyde Town Hall and Alma Lodge are already reserved by couples who planned early. The date and venue you have your heart set on can disappear fast.'} Call {contact.phone} today before another couple takes it.</p>
+
+          <div class="elite-cta">
+            <a class="button primary button-lg" href={contact.phoneHref}><Icon name="phone" /> Call {contact.phone} — Speak to Tony or John personally</a>
+            <a class="button ghost button-lg" href="/contact/">Send your detailed {area.name} wedding enquiry</a>
+            <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp us your venue &amp; date</a>
+          </div>
+          <p class="elite-trust">Fully insured • PAT tested • 35+ years • Based in Tameside • Serving every corner of {area.name} • The DJs who actually know your venues inside out</p>
+        </div>
+      )}
+
+      <div class="final-cta">
+        <h3>Ready to book the wedding DJs who actually know {area.name} inside out?</h3>
+        <p>Call Tony or John today — or send a quick enquiry. We’ll talk through your exact venue ({venueList}), your guest list, the story behind your first dance, and precisely what will make your {area.name} night the one everyone remembers for decades. No generic playlists. No surprises. Just perfect music for your perfect day.</p>
+        <div class="cta-group">
+          <a class="button primary button-lg" href={contact.phoneHref}>
+            <Icon name="phone" /> <strong>Call {contact.phone} now</strong>
+          </a>
+          <a class="button ghost button-lg" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+            <Icon name="whatsapp" /> WhatsApp us instantly
+          </a>
+          <a class="button ghost button-lg" href="/contact/">Send enquiry for {area.name} wedding</a>
+        </div>
+        <p class="small-note"><strong>Most popular {area.name} wedding dates book 6-9 months ahead.</strong> Based in Tameside. Covering {area.name} and all of Greater Manchester. Fully insured. 35+ years trusted experience. Local DJs who care about your day as much as you do. Your date is waiting — make the call.</p>
+      </div>
+    </section>
+
+    {/* ELITE MOBILE CONVERSION: Sticky bottom phone + WhatsApp bar — ONLY on Tameside & Stockport pages for maximum mobile taps (most wedding research happens on phones) */}
+    {isHighVolume && (
+      <div class="sticky-mobile-cta" role="complementary" aria-label="Instant contact for your {area.name} wedding">
+        <div class="sticky-inner">
+          <a class="sticky-phone" href={contact.phoneHref} aria-label={`Call Tony and John on ${contact.phone} for ${area.name} wedding`}>
+            <Icon name="phone" />
+            <span>Call {contact.phone}</span>
+          </a>
+          <a class="sticky-wa" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Tony and John about your wedding">
+            <Icon name="whatsapp" />
+            <span>WhatsApp</span>
+          </a>
+          <a class="sticky-enquire" href="/contact/" aria-label={`Enquire about ${area.name} wedding DJs`}>
+            Enquire
+          </a>
+        </div>
+        <div class="sticky-urgency">Most popular {area.name} dates gone in weeks — secure yours now</div>
+      </div>
+    )}
+
+    <!-- Enhanced ContactBlock for ALL wedding location pages: pre-selected event, wedding extras (first dance + guests), personalized headline/subtitle/context for zero-friction lead capture -->
+    <ContactBlock 
+      faq={true} 
+      defaultEventType="Wedding"
+      showWeddingExtras={true}
+      headline={`Ready to book your ${area.name} wedding DJs?`}
+      subtitle={`Tell us your date, venue (${venueList}) and first dance song. Local ${area.name} experts will confirm availability & quote within 24 hours — no obligation.`}
+      contextNote={`You're talking to real local ${area.name} DJs — Tony & John have played ${primaryVenue.name} and know exactly how ${crowdVibe} crowds move. Phone or quick form = instant response.`}
+      source={`wedding-djs-${slug}`}
+    />
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .lede {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .venue-intel-grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 720px) {
+    .venue-intel-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .venue-intel-card {
+    background: var(--paper-2);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .venue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-3);
+  }
+
+  .venue-header strong {
+    font-size: 1.1rem;
+  }
+
+  .venue-type {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+
+  .venue-notes {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: var(--space-4);
+  }
+
+  .venue-specs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .venue-specs div {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .venue-specs span {
+    font-weight: 600;
+    min-width: 70px;
+    color: var(--pink);
+  }
+
+  .venue-music,
+  .venue-story {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .venue-story {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .music-prefs {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .music-note {
+    background: var(--paper-2);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+
+  .music-decade {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--pink);
+    margin-bottom: var(--space-1);
+  }
+
+  .music-genres {
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    color: var(--cobalt);
+  }
+
+  .stories-grid {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .story-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .logistics li {
+    align-items: flex-start;
+  }
+
+  /* === New enhanced styles for conversion & local feel === */
+  .trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .trust-item svg {
+    color: var(--pink);
+    flex-shrink: 0;
+  }
+
+  .cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .cta-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+    font-style: italic;
+  }
+
+  .inline-cta {
+    display: inline-block;
+    margin-top: var(--space-3);
+    font-weight: 600;
+    color: var(--cobalt);
+    text-decoration: underline;
+  }
+  .inline-cta:hover {
+    color: var(--pink);
+  }
+
+  .three-col {
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 860px) {
+    .three-col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .local-cta-bar {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: var(--paper-2);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    justify-content: space-between;
+  }
+
+  .content-card.highlight {
+    border-color: var(--pink);
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+  }
+
+  .lede-small {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: var(--space-2);
+  }
+
+  .logistics-note {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+  }
+
+  .story-cta {
+    text-align: center;
+    margin-top: var(--space-4);
+    font-size: 0.95rem;
+  }
+
+  .music-prefs + p.music-tail {
+    text-align: center;
+    max-width: 700px;
+    margin: var(--space-4) auto 0;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .trust-final {
+    text-align: center;
+  }
+
+  .final-cta {
+    max-width: 720px;
+    margin: var(--space-6) auto 0;
+    padding: var(--space-6);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-lg);
+  }
+
+  .final-cta h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .final-cta p {
+    opacity: 0.95;
+    margin-bottom: var(--space-4);
+  }
+
+  .final-cta .small-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: var(--space-4);
+  }
+
+  /* Make sure venue grid still works inside panels */
+  .content-panel .venue-intel-grid {
+    margin-top: var(--space-3);
+  }
+
+  /* === NEW: Wedding Pexels gallery styles (visual trust + SEO image optimisation) === */
+  .wedding-visuals {
+    background: var(--paper-2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+
+  .wedding-gallery {
+    display: grid;
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+
+  @media (min-width: 640px) {
+    .wedding-gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .wedding-gallery {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .gallery-item {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .gallery-caption {
+    font-size: 0.85rem;
+    padding: var(--space-3);
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.4;
+    font-style: italic;
+    border-top: 1px solid var(--ink);
+  }
+
+  .gallery-note {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
+  /* === NEW: Venue post-CTA === */
+  .venue-cta {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+    border: 2px solid var(--pink);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .venue-cta p {
+    margin-bottom: var(--space-3);
+    font-size: 0.95rem;
+  }
+
+  /* === NEW: FAQ section for SEO rich results === */
+  .faq-section {
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 2px solid var(--ink);
+  }
+
+  .faq-section h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    color: var(--ink);
+  }
+
+  .faq-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: 0;
+  }
+
+  .faq-item summary {
+    font-weight: 600;
+    padding: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--ink);
+  }
+
+  .faq-item summary::after {
+    content: '+';
+    font-size: 1.4rem;
+    color: var(--pink);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] summary::after {
+    content: '−';
+  }
+
+  .faq-item p {
+    padding: var(--space-4);
+    padding-top: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    border-top: 1px solid var(--ink);
+  }
+
+  .faq-cta {
+    margin-top: var(--space-4);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* === NEW: High-volume special (Tameside + Stockport) === */
+  .high-volume-special {
+    max-width: 1100px;
+    margin: var(--space-6) auto 0;
+    padding: var(--space-6);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-lg);
+    text-align: left;
+  }
+
+  .high-volume-special h3 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    margin-bottom: var(--space-4);
+    text-align: center;
+    color: var(--paper);
+  }
+
+  .high-volume-grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  @media (min-width: 720px) {
+    .high-volume-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .high-volume-grid > div {
+    background: rgba(255,255,255,0.08);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .high-volume-grid strong {
+    display: block;
+    font-size: 1.05rem;
+    margin-bottom: var(--space-2);
+    color: var(--pink);
+  }
+
+  .high-volume-grid p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.95;
+  }
+
+  .high-volume-special .urgency {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    color: var(--pink);
+  }
+
+  /* Extra trust item in row for 5th item */
+  .trust-row {
+    flex-wrap: wrap;
+  }
+
+  /* Top phone CTA styles now live in global site.css (with enhanced mobile thumb-friendly full-width taps on <480px). .urgency-note kept for content. */
+  .urgency-note {
+    color: var(--pink);
+    font-weight: 700;
+  }
+
+  /* High-volume elite special - made especially powerful for Tameside & Stockport */
+  .high-volume-special.elite {
+    border: 3px solid var(--pink);
+  }
+  .high-volume-special.elite .high-volume-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  @media (min-width: 720px) {
+    .high-volume-special.elite .high-volume-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 980px) {
+    .high-volume-special.elite .high-volume-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .high-volume-special.elite .elite-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-top: var(--space-4);
+  }
+  .high-volume-special.elite .urgency {
+    font-size: 1rem;
+    background: rgba(255, 107, 157, 0.15);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--pink);
+  }
+
+  /* Make all phone numbers in CTAs extra prominent (top-phone styles now global) */
+  .cta-group a.button.ghost strong {
+    font-size: 1.05em;
+  }
+
+  /* Elite persuasion card for Tameside & Stockport - especially strong conversion focus */
+  .elite-persuasion {
+    border-color: var(--pink);
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .elite-persuasion h2 {
+    color: var(--pink);
+    font-size: 1.25rem;
+  }
+  .elite-persuasion p {
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  /* === ELITE ADDITIONS for Tameside & Stockport wedding pages ONLY === */
+  .first-dance-guide {
+    background: linear-gradient(145deg, var(--paper), var(--paper-2));
+    border: 3px solid var(--pink);
+    box-shadow: 0 6px 24px rgba(255, 107, 157, 0.12);
+  }
+  .first-dance-guide h2 {
+    font-family: var(--font-display);
+    color: var(--pink);
+    margin-bottom: var(--space-3);
+  }
+  .guide-intro {
+    font-size: 1.0rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: var(--space-4);
+  }
+  .song-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+  .song-item {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .song-bullet {
+    font-size: 1.4rem;
+    color: var(--pink);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .song-item p {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .guide-cta {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: var(--space-3);
+  }
+
+  /* Local trends box inside elite high-volume special */
+  .local-trends-box {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,107,157,0.4);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-5) 0;
+    text-align: left;
+  }
+  .local-trends-box strong {
+    display: block;
+    color: var(--pink);
+    font-size: 1.05rem;
+    margin-bottom: var(--space-2);
+  }
+  .local-trends-box p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    opacity: 0.95;
+  }
+
+  .high-volume-special.elite .elite-trust {
+    text-align: center;
+    font-size: 0.82rem;
+    opacity: 0.85;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* =============================================
+     ELITE MOBILE STICKY CTA BAR — Tameside & Stockport only
+     Highest-converting pattern: persistent phone/WhatsApp on mobile for wedding planners
+  ============================================= */
+  .sticky-mobile-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: var(--ink);
+    border-top: 3px solid var(--pink);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+    display: none; /* hidden on desktop, shown via media query */
+    padding: 8px 10px 10px;
+  }
+  @media (max-width: 768px) {
+    .sticky-mobile-cta {
+      display: block;
+    }
+    /* push footer and content up so sticky doesn't cover important elements */
+    body {
+      padding-bottom: 92px !important;
+    }
+  }
+  .sticky-inner {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+  }
+  .sticky-phone, .sticky-wa, .sticky-enquire {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 14px;
+    border-radius: 9999px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
+    min-height: 48px;
+    min-width: 0;
+    flex: 1;
+    text-align: center;
+    transition: transform 0.1s ease;
+  }
+  .sticky-phone {
+    background: var(--pink);
+    color: var(--ink);
+    flex: 1.6;
+  }
+  .sticky-phone:hover {
+    background: #ff6b9d;
+    transform: scale(1.02);
+  }
+  .sticky-wa {
+    background: #25D366;
+    color: white;
+    flex: 1;
+  }
+  .sticky-wa:hover {
+    background: #1da851;
+  }
+  .sticky-enquire {
+    background: var(--paper);
+    color: var(--ink);
+    border: 2px solid var(--pink);
+    font-weight: 700;
+    flex: 0.9;
+  }
+  .sticky-enquire:hover {
+    background: var(--paper-2);
+  }
+  .sticky-phone span, .sticky-wa span {
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+  .sticky-urgency {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--pink);
+    font-weight: 700;
+    margin-top: 6px;
+    letter-spacing: 0.3px;
+    opacity: 0.95;
+  }
+
+  /* =============================================
+     ELITE CRO STYLES — Risk Reversal + Ultra-High Conversion for Tameside & Stockport only
+     Multiple strong CTAs, prominent phone, deep area persuasion, emotional trust, risk reversal
+  ============================================= */
+  .risk-reversal {
+    border: 3px solid var(--pink);
+    background: linear-gradient(160deg, var(--paper), var(--paper-2));
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .risk-reversal::before {
+    content: '★ LOCAL GUARANTEE';
+    position: absolute;
+    top: -12px;
+    right: var(--space-5);
+    background: var(--pink);
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    border-radius: 9999px;
+    box-shadow: 0 2px 8px rgba(255,107,157,0.4);
+  }
+  .risk-reversal h2 {
+    color: var(--pink);
+    font-size: 1.35rem;
+    margin-bottom: var(--space-3);
+    padding-right: 140px;
+  }
+  .risk-lede {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--ink);
+    margin-bottom: var(--space-4);
+  }
+  .risk-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-5) 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .risk-list li {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    font-size: 0.97rem;
+    line-height: 1.55;
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+  .risk-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .risk-list strong {
+    color: var(--cobalt);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1rem;
+  }
+  .risk-cta-bar {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    margin-top: var(--space-4);
+  }
+  .risk-urgency {
+    font-size: 1.0rem;
+    font-weight: 700;
+    line-height: 1.45;
+    margin-bottom: var(--space-4);
+    color: var(--pink);
+  }
+  .risk-cta-bar .cta-group {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+  .risk-note {
+    margin-top: var(--space-4);
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-style: italic;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-group-risk a.button {
+    min-width: 240px;
+  }
+  @media (max-width: 720px) {
+    .risk-reversal h2 {
+      padding-right: 0;
+      font-size: 1.2rem;
+    }
+    .risk-list li {
+      font-size: 0.94rem;
+      padding: var(--space-3);
+    }
+  }
+
+  /* === ELITE TAMESIDE & STOCKPORT ONLY: Risk Reversal Guarantee block (new ultra-high-converting section) === */
+  .elite-risk-reversal {
+    border: 3px solid var(--pink);
+    background: linear-gradient(145deg, var(--paper), #fffaf5);
+    box-shadow: 0 10px 32px rgba(255, 107, 157, 0.15);
+  }
+  .elite-risk-reversal h2 {
+    font-size: 1.32rem;
+    margin-bottom: var(--space-2);
+    color: var(--pink);
+  }
+  .guarantee-list {
+    margin: var(--space-4) 0;
+    padding-left: 1.1rem;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .guarantee-list li {
+    margin-bottom: var(--space-2);
+  }
+  .guarantee-list strong {
+    color: var(--cobalt);
+  }
+</style>

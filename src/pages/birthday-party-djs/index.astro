@@ -1,0 +1,165 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
+---
+
+<Layout
+  title="Birthday Party DJs across Tameside, Manchester & the North West | TeeJays Disco"
+  description="Expert birthday party DJs in Tameside, Stockport, Oldham, Manchester for 18ths, 21sts, 30ths, 40ths, 50ths & beyond. Multi-gen specialists who know 50+ local venues. Get your quote today."
+>
+  <main class="page">
+    <Header />
+
+    <!-- Prominent phone CTA bar for mobile conversion on birthday hub -->
+    <div class="top-phone-cta">
+      <div class="top-phone-inner">
+        <span class="top-phone-label">Local birthday party DJs across Tameside, Stockport & Greater Manchester — call now</span>
+        <a class="top-phone-link" href={contact.phoneHref}>
+          <Icon name="phone" /> <strong>{contact.phone}</strong>
+        </a>
+        <a class="top-phone-link whatsapp" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" /> WhatsApp Tony &amp; John
+        </a>
+        <span class="top-phone-urgency">Milestone dates book 4–6 months ahead — lock in your local DJs</span>
+      </div>
+    </div>
+
+    <PageHero
+      title="Birthday Party DJs who read the room"
+      subtitle="Tony & John — 35+ years each. We build nights that work for every generation in the room, from 18ths to 80ths."
+      image="/images/services/birthdays/birthday-family-dancing-celebration-6518005.jpg"
+      imageAlt="Multi-generational family and friends dancing and celebrating at a lively birthday party with TeeJays Disco"
+      ctas={[
+        { label: 'Check birthday availability', href: '/contact/', icon: 'calendar', variant: 'primary' },
+        { label: `Call Tony & John: ${contact.phone}`, href: contact.phoneHref, icon: 'phone', variant: 'ghost' },
+        { label: 'WhatsApp us now', href: contact.whatsappHref, icon: 'whatsapp', variant: 'whatsapp' },
+      ]}
+    />
+
+    <StatStrip />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Birthday Party DJs' }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Birthday DJs who make every generation feel included</h2>
+          <p>
+            From raucous 18ths and 21sts to milestone 50ths and 60ths with the whole family, we build the perfect night in sections. The right energy at the right time — current hits for the young ones, classics that make the parents and grandparents hit the floor too.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>Multi-generational crowds handled properly — nobody feels left out</li>
+            <li><span><Icon name="check" /></span>Milestone birthdays (18, 21, 30, 40, 50, 60+) get special song planning</li>
+            <li><span><Icon name="check" /></span>Real local knowledge of the venues and what actually works there</li>
+            <li><span><Icon name="check" /></span>Friendly hosting without taking over the night</li>
+          </ul>
+          <p style="margin-top: var(--space-4);">
+            <a href="#contact" class="button primary">Check availability for your birthday</a>
+            <a href={contact.phoneHref} class="button ghost" style="margin-left: 12px;">Call {contact.phone}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="Birthday Party DJs in 8 priority towns" subtitle="Real venue intelligence for multi-generational parties. Every area page details the exact halls, crowds and music that fills floors locally — 50+ venues we know inside out." />
+
+      <div class="area-list-grid">
+        {areaCards.map((card) => (
+          <a class="area-list-card" href={`/birthday-party-djs/${card.slug}/`}>
+            <div class="area-list-icon"><Icon name="cake" /></div>
+            <h3>Birthday DJs in {card.name}</h3>
+            <p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+            {card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+            <span class="area-list-cta">See local venues &amp; music →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="How we run birthday parties differently" subtitle="Not a one-size-fits-all playlist — nights built for every generation in the room." />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Sectioned sets that work</h2>
+          <p>We plan the night in deliberate blocks: early evening for the older guests and family favourites, peak party for the main crowd, late requests handled smartly. Every birthday gets its own rhythm based on who’s in the room.</p>
+        </div>
+        <div class="content-card">
+          <h2>Venue &amp; crowd intelligence</h2>
+          <p>We know which local halls suit big family 50ths and which work better for friend-heavy 30ths. Power, parking, acoustics — we’ve loaded into them all and know exactly how to make the night flow without stress for you.</p>
+        </div>
+        <div class="content-card">
+          <h2>Friendly but in control</h2>
+          <p>Great hosting that brings people together without hijacking the night. We read when to push the energy and when to pull back so the birthday person and their guests have the best time possible.</p>
+        </div>
+      </div>
+    </section>
+
+    <ReviewsGrid limit={3} title="What guests say about our birthday party DJs" />
+
+    <section class="section">
+      <SectionTitle title="Other celebrations we cover locally" subtitle="The same multi-generational music expertise for every kind of party and milestone." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href="/wedding-djs/">
+          <Icon name="rings" />
+          <span>Wedding DJs</span>
+        </a>
+        <a class="area-link-card" href="/anniversary-djs/">
+          <Icon name="heart" />
+          <span>Anniversary DJs</span>
+        </a>
+        <a class="area-link-card" href="/corporate-djs/">
+          <Icon name="briefcase" />
+          <span>Corporate Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/school-disco-djs/">
+          <Icon name="graduate" />
+          <span>School Disco DJs</span>
+        </a>
+        <a class="area-link-card" href="/pub-club-djs/">
+          <Icon name="music" />
+          <span>Pub &amp; Club Night DJs</span>
+        </a>
+        <a class="area-link-card" href="/community-djs/">
+          <Icon name="group" />
+          <span>Community Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/areas/">
+          <Icon name="pin" />
+          <span>Browse all areas we cover</span>
+        </a>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} defaultEventType="Birthday Party" />
+    <Footer />
+  </main>
+</Layout>

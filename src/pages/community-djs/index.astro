@@ -1,0 +1,145 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactBlock from '../../components/ContactBlock.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import Icon from '../../components/Icon.astro';
+import PageHero from '../../components/PageHero.astro';
+import ReviewsGrid from '../../components/ReviewsGrid.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import StatStrip from '../../components/StatStrip.astro';
+import Layout from '../../layouts/Layout.astro';
+import { areas, business, contact, localIntelligence } from '../../data/site';
+
+export const prerender = true;
+
+const supportedSlugs = Object.keys(localIntelligence);
+const supportedAreas = areas.filter((a) => supportedSlugs.includes(a.slug));
+
+const areaCards = supportedAreas.map((area) => {
+  const intel = localIntelligence[area.slug];
+  const venueCount = intel?.venues?.length ?? 0;
+  const sampleVenue = intel?.venues?.[0]?.name ?? '';
+  return {
+    slug: area.slug,
+    name: area.name,
+    pride: intel?.localPride || area.description,
+    venueCount,
+    sampleVenue,
+  };
+});
+---
+
+<Layout
+  title="Community Event DJs across Tameside, Manchester & the North West | TeeJays Disco"
+  description="Inclusive community event DJs in Tameside, Stockport, Oldham & Manchester for festivals, fetes, fundraisers & local gatherings. Multi-age specialists who know 50+ local venues and work brilliantly with volunteers. Get your quote."
+>
+  <main class="page">
+    <Header />
+    <PageHero
+      title="Community Event DJs who read the room"
+      subtitle="Tony & John — 35+ years each. We play for real community crowds — families, all ages, and local spirit."
+      image="/images/services/community/community-street-festival-dancing-crowd-34690258.jpg"
+      imageAlt="Diverse community crowd dancing outdoors at a local festival or fundraiser with TeeJays Disco in Greater Manchester"
+    />
+
+    <StatStrip />
+
+    <section class="section">
+      <Breadcrumbs items={[{ label: 'Community DJs' }]} />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Community Event DJs who bring everyone together</h2>
+          <p>
+            Festivals, fundraisers, fetes and local gatherings have the broadest age range — toddlers to grandparents, volunteers, local businesses. We keep it inclusive and family-friendly in the daytime, then gradually open up the energy for the adults later — all while handling the practical realities of outdoor fields, village halls and sports clubs across the North West.
+          </p>
+          <ul class="check-list">
+            <li><span><Icon name="check" /></span>Proven with genuinely mixed-age, family-friendly community crowds</li>
+            <li><span><Icon name="check" /></span>Comfortable at outdoor fetes, festivals, fundraisers and village halls</li>
+            <li><span><Icon name="check" /></span>Flexible sets that flow beautifully from afternoon into evening</li>
+            <li><span><Icon name="check" /></span>Easy to work with for volunteers, organisers and local councils</li>
+          </ul>
+          <p style="margin-top: var(--space-4);">
+            <a href="#contact" class="button primary">Check community event availability</a>
+            <a href={contact.phoneHref} class="button ghost" style="margin-left: 12px;">Call {contact.phone}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="Community Event DJs in 8 priority towns" subtitle="Real local venue intelligence for inclusive community events. Every area page covers the fields, halls and clubs where local spirit comes alive." />
+
+      <div class="area-list-grid">
+        {areaCards.map((card) => (
+          <a class="area-list-card" href={`/community-djs/${card.slug}/`}>
+            <div class="area-list-icon"><Icon name="group" /></div>
+            <h3>Community DJs in {card.name}</h3>
+            <p>{card.pride}{card.venueCount > 0 ? ` — ${card.venueCount} venues we know inside-out.` : ''}</p>
+            {card.sampleVenue && <p style="font-size:0.85rem; opacity:0.75; margin-top:4px;">Featured: {card.sampleVenue}</p>}
+            <span class="area-list-cta">See venues, music &amp; approach →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionTitle title="How we run community events differently" subtitle="Not generic background — inclusive music that brings the whole community together." />
+
+      <div class="content-panel">
+        <div class="content-card">
+          <h2>Ground-level venue realities</h2>
+          <p>We know which local fields turn to mud, which village halls have power limitations, which sports clubs have great sound. We plan contingencies so stretched volunteer organisers can relax — the event just works.</p>
+        </div>
+        <div class="content-card">
+          <h2>Music for the entire crowd</h2>
+          <p>The widest age and taste range of any event. We start inclusive and gentle for families and toddlers, then bring in the floor-fillers for the adults later — nobody ever feels left out or overwhelmed.</p>
+        </div>
+        <div class="content-card">
+          <h2>Volunteer-friendly professionals</h2>
+          <p>Fundraisers and fetes are run by volunteers. We’re flexible, low-drama, professional and easy to work with — so the people who organised the event can actually enjoy it themselves.</p>
+        </div>
+      </div>
+    </section>
+
+    <ReviewsGrid limit={3} title="What communities say about our event DJs" />
+
+    <section class="section">
+      <SectionTitle title="Other celebrations we support with the same community spirit" subtitle="Flexible, friendly DJs for weddings, birthdays, corporate functions, school events and pub nights." />
+      <div class="area-link-grid">
+        <a class="area-link-card" href="/wedding-djs/">
+          <Icon name="rings" />
+          <span>Wedding DJs</span>
+        </a>
+        <a class="area-link-card" href="/birthday-party-djs/">
+          <Icon name="cake" />
+          <span>Birthday Party DJs</span>
+        </a>
+        <a class="area-link-card" href="/anniversary-djs/">
+          <Icon name="heart" />
+          <span>Anniversary DJs</span>
+        </a>
+        <a class="area-link-card" href="/corporate-djs/">
+          <Icon name="briefcase" />
+          <span>Corporate Event DJs</span>
+        </a>
+        <a class="area-link-card" href="/school-disco-djs/">
+          <Icon name="graduate" />
+          <span>School Disco DJs</span>
+        </a>
+        <a class="area-link-card" href="/pub-club-djs/">
+          <Icon name="music" />
+          <span>Pub &amp; Club Night DJs</span>
+        </a>
+        <a class="area-link-card" href="/areas/">
+          <Icon name="pin" />
+          <span>Browse all areas we cover</span>
+        </a>
+      </div>
+    </section>
+
+    <ContactBlock faq={false} />
+    <Footer />
+  </main>
+</Layout>

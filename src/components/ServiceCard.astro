@@ -11,7 +11,7 @@ const { service } = Astro.props;
 
 <a class="service-card" href={`/services/${service.slug}/`} style={`--accent:${service.accent}`}>
 	<div class="service-image">
-		<img src={service.image} alt={`${service.title} DJ at a TeeJays Disco event`} width="1200" height="800" loading="lazy" decoding="async" />
+		<img src={service.image} alt={`${service.title} DJs — ${service.copy} Professional mobile DJ service by TeeJays Disco`} width="1200" height="800" loading="lazy" decoding="async" sizes="(min-width: 768px) 33vw, 100vw" />
 	</div>
 	<div class="service-icon">
 		<Icon name={service.icon} />

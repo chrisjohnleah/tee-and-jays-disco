@@ -5,11 +5,22 @@ import sitemap from '@astrojs/sitemap';
 import critters from 'astro-critters';
 import compress from '@playform/compress';
 
+const serviceHubs = [
+	'wedding-djs',
+	'birthday-party-djs',
+	'anniversary-djs',
+	'corporate-djs',
+	'school-disco-djs',
+	'pub-club-djs',
+	'community-djs',
+];
+
 const priorityFor = (url) => {
 	const path = new URL(url).pathname;
 	if (path === '/') return 1.0;
-	if (path === '/services/' || path === '/areas/') return 0.9;
-	if (path.startsWith('/services/') || path.startsWith('/areas/')) return 0.8;
+	if (path === '/services/' || path === '/areas/' || serviceHubs.some((h) => path === `/${h}/`)) return 0.9;
+	if (path.startsWith('/services/') || path.startsWith('/areas/') || serviceHubs.some((h) => path.startsWith(`/${h}/`))) return 0.85;
+	if (path.startsWith('/personas/') || path.startsWith('/best/')) return 0.75;
 	if (['/contact/', '/about/', '/reviews/', '/faq/', '/gallery/'].includes(path)) return 0.7;
 	if (['/privacy/', '/terms/', '/sitemap/'].includes(path)) return 0.3;
 	return 0.5;
@@ -18,7 +29,7 @@ const priorityFor = (url) => {
 const changefreqFor = (url) => {
 	const path = new URL(url).pathname;
 	if (path === '/') return 'weekly';
-	if (path.startsWith('/services/') || path.startsWith('/areas/')) return 'monthly';
+	if (path.startsWith('/services/') || path.startsWith('/areas/') || serviceHubs.some((h) => path.startsWith(`/${h}/`))) return 'monthly';
 	if (['/privacy/', '/terms/'].includes(path)) return 'yearly';
 	return 'monthly';
 };
