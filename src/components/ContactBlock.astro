@@ -21,7 +21,12 @@ const { faq = true } = Astro.props;
 				<a href={contact.phoneHref}>
 					<span><Icon name="phone" /></span>
 					<strong>{contact.phone}</strong>
-					<small>Call or text anytime</small>
+					<small>Call anytime</small>
+				</a>
+				<a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+					<span><Icon name="whatsapp" /></span>
+					<strong>WhatsApp us</strong>
+					<small>Fastest reply — message {contact.whatsapp}</small>
 				</a>
 				<a href={contact.emailHref}>
 					<span><Icon name="mail" /></span>

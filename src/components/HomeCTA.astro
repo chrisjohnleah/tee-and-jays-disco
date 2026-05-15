@@ -15,7 +15,11 @@ import Icon from './Icon.astro';
 			</a>
 			<a class="button" href={contact.phoneHref}>
 				<Icon name="phone" />
-				{contact.phone}
+				Call {contact.phone}
+			</a>
+			<a class="button whatsapp" href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+				<Icon name="whatsapp" />
+				WhatsApp
 			</a>
 		</div>
 

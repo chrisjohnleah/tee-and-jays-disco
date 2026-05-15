@@ -14,8 +14,10 @@ export const business = {
 };
 
 export const contact = {
-	phone: '07710 123456',
-	phoneHref: 'tel:07710123456',
+	phone: '07545 378105',
+	phoneHref: 'tel:07545378105',
+	whatsapp: '07545 378105',
+	whatsappHref: 'https://wa.me/447545378105?text=Hi%20TeeJays%20%E2%80%94%20I%27d%20like%20to%20check%20availability%20for%20an%20event.',
 	email: 'info@teejaysdisco.co.uk',
 	emailHref: 'mailto:info@teejaysdisco.co.uk',
 	location: 'Tameside, Greater Manchester',
@@ -83,6 +85,8 @@ export const icons = {
 		'<path d="m20 6-11 11-5-5"/>',
 	plus:
 		'<path d="M12 5v14M5 12h14"/>',
+	whatsapp:
+		'<path d="M20.5 3.5A11 11 0 0 0 3.5 18.7L2 22l3.4-1.4a11 11 0 0 0 16.1-9.5 11 11 0 0 0-1-7.6Z"/><path d="M8.5 8.5c.3-.6.6-.7 1.1-.7h.5c.2 0 .5 0 .7.6.3.7.9 2.3 1 2.4 0 .2.1.3 0 .5l-.4.6-.5.6c-.2.1-.3.3-.2.6.3.5 1 1.6 2 2.4 1.2 1 2.2 1.3 2.5 1.5.3.1.5.1.6 0 .2-.2.7-.8.9-1.1.2-.3.4-.3.6-.2.3.1 1.7.8 2 1l.3.1c0 .1.1.4 0 1-.2.6-1 1.2-1.5 1.3-.4.1-1 .2-2.7-.6-2.3-1.1-3.8-3.4-3.9-3.6-.1-.1-.9-1.2-.9-2.4 0-1.1.6-1.7.8-1.9Z"/>',
 } as const;
 
 export type IconName = keyof typeof icons;
