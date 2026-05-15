@@ -18,10 +18,10 @@ export const contact = {
 	phoneHref: 'tel:07545378105',
 	whatsapp: '07545 378105',
 	whatsappHref: 'https://wa.me/447545378105?text=Hi%20TeeJays%20%E2%80%94%20I%27d%20like%20to%20check%20availability%20for%20an%20event.',
-	email: 'info@teejaysdisco.co.uk',
-	emailHref: 'mailto:info@teejaysdisco.co.uk',
+	email: '@teejaysdisco.co.uk',
+	emailHref: 'mailto:bookings@teejaysdisco.co.uk',
 	location: 'Tameside, Greater Manchester',
-};
+};bookings
 
 type NavItem = {
 	label: string;
