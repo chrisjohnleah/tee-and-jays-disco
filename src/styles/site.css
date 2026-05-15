@@ -1069,8 +1069,8 @@ main { position: relative; z-index: 1; }
 
 .service-icon {
 	position: absolute;
-	top: -24px;
-	right: var(--space-4);
+	top: 12px;
+	right: 12px;
 	display: grid;
 	place-items: center;
 	width: 60px;
