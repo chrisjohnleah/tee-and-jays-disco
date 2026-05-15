@@ -64,7 +64,7 @@ export const icons = {
 	rings:
 		'<circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/>',
 	cake:
-		'<path d="M20 21H4v-9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="M8 10V7M12 10V7M16 10V7M4 15h16"/>',
+		'<path d="M3 21h18"/><path d="M5 21v-8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8"/><path d="M5 16h14"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/><path d="M12 8V4"/><path d="M11.2 4c0-.6.4-1 .8-1.6.4.6.8 1 .8 1.6a.8.8 0 0 1-1.6 0Z"/>',
 	heart:
 		'<path d="M19.5 12.6 12 20l-7.5-7.4A5 5 0 0 1 12 6a5 5 0 0 1 7.5 6.6Z"/>',
 	briefcase:
