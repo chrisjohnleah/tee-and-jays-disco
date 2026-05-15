@@ -1,14 +1,22 @@
 ---
-import { stats } from '../data/site';
 import Icon from './Icon.astro';
+
+const facts = [
+	{ icon: 'star', big: '35+', small: 'years each, two DJs' },
+	{ icon: 'users', big: '1000s', small: 'of dancefloors filled' },
+	{ icon: 'shield', big: 'Insured', small: 'PAT-tested gear' },
+	{ icon: 'speaker', big: 'Pro Sound', small: 'and lighting included' },
+	{ icon: 'pin', big: 'GM-wide', small: 'Tameside · Manchester · North West' },
+] as const;
 ---
 
 <section class="stat-strip" aria-label="TeeJays highlights">
 	<div class="stat-wrap">
-		{stats.map((stat) => (
+		{facts.map((fact) => (
 			<div class="stat">
-				{stat.badge ? <div class="years-badge"><strong>{stat.badge}</strong></div> : <Icon name={stat.icon} />}
-				<p><strong>{stat.value}</strong><span>{stat.label}</span></p>
+				<Icon name={fact.icon as any} />
+				<strong>{fact.big}</strong>
+				<span>{fact.small}</span>
 			</div>
 		))}
 	</div>

@@ -7,12 +7,12 @@ import Icon from './Icon.astro';
 	<div class="why-panel">
 		<div class="why-copy">
 			<h2>Why choose TeeJays Disco?</h2>
-			<p>We're Tony &amp; John, two lifelong music lovers and professional DJs with over 35 years of experience each, entertaining across Tameside, Manchester and the North West.</p>
+			<p>We're Tony &amp; John — two lifelong music lovers and professional DJs with 35+ years each, reading rooms across Tameside, Manchester and the North West.</p>
 			<ul>
 				{bullets.map(([title, copy]) => (
 					<li>
 						<span><Icon name="check" /></span>
-						<strong>{title}</strong> {copy}
+						<div><strong>{title}</strong> &mdash; {copy}</div>
 					</li>
 				))}
 			</ul>
@@ -26,22 +26,13 @@ import Icon from './Icon.astro';
 	</div>
 
 	<div class="area-panel">
-		<h2>Proudly serving Tameside, Manchester &amp; the North West</h2>
-		<div class="area-content">
-			<div class="map-card">
-				<span class="map-pin manchester">Manchester</span>
-				<span class="map-pin ashton">Ashton-under-Lyne</span>
-				<span class="map-pin oldham">Oldham</span>
-				<span class="map-pin stalybridge">Stalybridge</span>
-				<span class="map-pin hyde">Hyde</span>
-				<span class="map-pin stockport">Stockport</span>
-			</div>
-			<div class="area-list">
-				<p>We regularly provide DJ services in:</p>
-				{areas.filter((area) => area.featured).map((area) => <a href={`/areas/${area.slug}/`}>{area.name}</a>)}
-				<small>and surrounding areas</small>
-				<p>Travel further afield? Just ask!</p>
-			</div>
-		</div>
+		<h2>We're a Tameside &amp; Greater Manchester act</h2>
+		<p class="area-lede">From Ashton to Altrincham, Bury to Bramhall — we set up across the whole of Greater Manchester and the North West.</p>
+		<ul class="featured-areas">
+			{areas.filter((area) => area.featured).map((area) => (
+				<li><a href={`/areas/${area.slug}/`}>{area.name}</a></li>
+			))}
+		</ul>
+		<p class="area-footnote">+ surrounding villages, country venues and travel further afield on request. <a href="/contact/" class="area-cta">Venue not listed? Drop us a line →</a></p>
 	</div>
 </section>

@@ -4,15 +4,23 @@ import Icon from './Icon.astro';
 ---
 
 <section class="hero">
-	<img class="hero-djs" src="/images/newjohntony-hero-wide.jpg" alt="John and Tony behind a professional DJ console in a party setting" width="3200" height="760" fetchpriority="high" decoding="async" />
-	<div class="hero-wash" aria-hidden="true"></div>
-	<div class="hero-inner">
+	<div class="hero-grid">
 		<div class="hero-copy">
+			<span class="hero-eyebrow">Live · Available 2026</span>
+
 			<h1>
-				Experienced mobile DJs for unforgettable events in
-				<span>Tameside &amp; Manchester</span>
+				Mobile DJs for
+				<span class="lime">Tameside</span>
+				<span class="amp">&amp;</span>
+				<span class="pink">Manchester</span>
 			</h1>
-			<p>Tony &amp; John, providing professional disco and entertainment with 35+ years of experience each. Great music, brilliant vibes, memories that last.</p>
+
+			<p class="hero-lede">
+				Tony &amp; John — <strong>35+ years each</strong> of weddings, parties and packed-out pubs across Greater Manchester. Real DJs, not a playlist. We read the room. We keep it moving.
+			</p>
+
+			<p class="hero-script" aria-hidden="true">— booked. set up. <em>sorted.</em></p>
+
 			<div class="hero-actions">
 				<a class="button primary" href="/contact/">
 					<Icon name="calendar" />
@@ -20,13 +28,36 @@ import Icon from './Icon.astro';
 				</a>
 				<a class="button ghost" href={contact.phoneHref}>
 					<Icon name="phone" />
-					Call Now
+					{contact.phone}
 				</a>
 			</div>
-			<a class="phone-link" href={contact.phoneHref}>
-				<Icon name="phone" />
-				{contact.phone}
-			</a>
+
+			<div class="hero-meta">
+				<span class="hero-meta-item">
+					<span class="hero-stars" aria-label="5 star rating">
+						<Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" />
+					</span>
+					<strong>5.0</strong>
+				</span>
+				<span class="hero-meta-item"><Icon name="shield" /> Fully insured</span>
+				<span class="hero-meta-item"><Icon name="pin" /> Greater Manchester</span>
+			</div>
 		</div>
+
+		<figure class="hero-photo portrait">
+			<img
+				src="/images/john-tony-djs-portrait.png"
+				alt="Tony and John of TeeJays Disco at the decks under stage lights, headphones around their necks, mixing for a live crowd."
+				width="1132"
+				height="1414"
+				fetchpriority="high"
+				decoding="async"
+			/>
+			<figcaption>Tony &amp; John — your DJs.</figcaption>
+			<div class="hero-sticker" aria-hidden="true">
+				<span>35+</span>
+				Years<br />on the<br />decks
+			</div>
+		</figure>
 	</div>
 </section>

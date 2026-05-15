@@ -1,0 +1,15 @@
+---
+interface Props {
+	items: string[];
+	variant?: 'ink' | 'pink' | 'lime';
+}
+
+const { items, variant = 'ink' } = Astro.props;
+const doubled = [...items, ...items];
+---
+
+<div class:list={['marquee', variant === 'pink' && 'pink-bg', variant === 'lime' && 'lime-bg']} aria-hidden="true">
+	<div class="marquee-track">
+		{doubled.map((item) => <span class="marquee-item">{item}</span>)}
+	</div>
+</div>

@@ -1,10 +1,10 @@
 ---
 import AboutArea from '../components/AboutArea.astro';
 import Footer from '../components/Footer.astro';
-import GalleryStrip from '../components/GalleryStrip.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import HomeCTA from '../components/HomeCTA.astro';
+import Marquee from '../components/Marquee.astro';
 import ReviewsGrid from '../components/ReviewsGrid.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ServiceCard from '../components/ServiceCard.astro';
@@ -13,6 +13,17 @@ import Layout from '../layouts/Layout.astro';
 import { services } from '../data/site';
 
 export const prerender = true;
+
+const marqueeItems = [
+	'Weddings',
+	'18ths — 80ths',
+	'Corporate dos',
+	'Pubs & clubs',
+	'Anniversaries',
+	'School discos',
+	'Community events',
+	'2026 dates',
+];
 ---
 
 <Layout
@@ -22,10 +33,11 @@ export const prerender = true;
 	<main class="page">
 		<Header />
 		<Hero />
+		<Marquee items={marqueeItems} variant="lime" />
 		<StatStrip />
 
 		<section class="section services" id="services">
-			<SectionTitle title="Our Services" subtitle="Music for every occasion. Memories for a lifetime." />
+			<SectionTitle title="What we play" subtitle="One booking, every kind of night." />
 			<div class="service-grid">
 				{services.map((service) => <ServiceCard service={service} />)}
 			</div>
@@ -33,7 +45,6 @@ export const prerender = true;
 
 		<AboutArea />
 		<ReviewsGrid limit={3} />
-		<GalleryStrip />
 		<HomeCTA />
 		<Footer />
 	</main>
