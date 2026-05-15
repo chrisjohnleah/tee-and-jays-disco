@@ -20,6 +20,8 @@
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^13.5.0",
+    "@playform/compress": "^0.2.3",
+    "astro-critters": "^2.2.1",
     "wrangler": "^4.89.1"
   }
 }

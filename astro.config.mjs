@@ -2,6 +2,8 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
+import critters from 'astro-critters';
+import compress from '@playform/compress';
 
 const priorityFor = (url) => {
 	const path = new URL(url).pathname;
@@ -35,6 +37,20 @@ export default defineConfig({
         item.lastmod = new Date().toISOString();
         return item;
       },
+    }),
+
+    // Inline above-the-fold CSS and lazy-load the rest.
+    // Has to run before compress so its output gets minified.
+    critters(),
+
+    // Minify HTML / CSS / JS in the final build.
+    // Images + SVG already optimised, skip those passes.
+    compress({
+      CSS: true,
+      HTML: true,
+      JavaScript: true,
+      Image: false,
+      SVG: false,
     }),
   ],
 });

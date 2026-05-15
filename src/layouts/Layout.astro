@@ -78,9 +78,27 @@ const localBusinessSchema = {
 		<meta name="application-name" content="TeeJays Disco" />
 		<link rel="canonical" href={canonical} />
 		{noindex && <meta name="robots" content="noindex,nofollow" />}
+
+		<!-- Preload LCP image (hero portrait on homepage; cheap miss elsewhere) -->
+		<link rel="preload" as="image" href="/images/john-tony-djs-portrait.png" fetchpriority="high" />
+
+		<!-- Non-blocking Google Fonts: load via print media swap so it doesn't block render.
+		     Local fallback face prevents FOIT. noscript path for JS-disabled clients. -->
+		<style>
+			@font-face { font-family: 'Space Grotesk'; font-display: swap; src: local('Space Grotesk'); }
+			@font-face { font-family: 'Anton'; font-display: swap; src: local('Anton'); }
+		</style>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bowlby+One+SC&family=Caveat:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Anton&family=Bowlby+One+SC&family=Caveat:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+			media="print"
+			onload="this.media='all'"
+		/>
+		<noscript>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bowlby+One+SC&family=Caveat:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" />
+		</noscript>
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<meta property="og:title" content={title} />
@@ -101,22 +119,39 @@ const localBusinessSchema = {
 		<title>{title}</title>
 		<script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
 
-		<!-- Microsoft Clarity -->
+		<!-- Analytics: deferred until first user interaction or 5s idle, so
+		     they don't compete with LCP / hydration on the critical path. -->
 		<script is:inline>
-			(function(c,l,a,r,i,t,y){
-				c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-				t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-				y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-			})(window, document, "clarity", "script", "woyhaglm4f");
-		</script>
+			(function () {
+				var loaded = false;
+				function loadAnalytics() {
+					if (loaded) return;
+					loaded = true;
 
-		<!-- Google tag (gtag.js) — GA4 -->
-		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-6SZL0DGHBX"></script>
-		<script is:inline>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-			gtag('config', 'G-6SZL0DGHBX');
+					// Microsoft Clarity
+					(function (c, l, a, r, i, t, y) {
+						c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+						t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+						y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+					})(window, document, 'clarity', 'script', 'woyhaglm4f');
+
+					// Google Analytics 4
+					var ga = document.createElement('script');
+					ga.async = true;
+					ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-6SZL0DGHBX';
+					document.head.appendChild(ga);
+					window.dataLayer = window.dataLayer || [];
+					function gtag() { dataLayer.push(arguments); }
+					window.gtag = gtag;
+					gtag('js', new Date());
+					gtag('config', 'G-6SZL0DGHBX');
+				}
+
+				['scroll', 'click', 'keydown', 'touchstart', 'mousemove'].forEach(function (evt) {
+					window.addEventListener(evt, loadAnalytics, { once: true, passive: true });
+				});
+				setTimeout(loadAnalytics, 5000);
+			})();
 		</script>
 
 		<slot name="head" />
