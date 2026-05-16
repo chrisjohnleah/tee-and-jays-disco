@@ -1,10 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 
 interface Props {
 	title: string;
 	subtitle: string;
-	image?: string;
+	/** Can be an imported image (best) or a public path string */
+	image?: any;
 	imageAlt?: string;
 	/** Optional conversion CTAs rendered directly in hero for above-the-fold impact. Benefit-driven, large tap targets. */
 	ctas?: Array<{
@@ -25,14 +27,14 @@ const {
 ---
 
 <section class="page-hero">
-	<img 
-		src={image} 
-		alt={imageAlt || `${title} with TeeJays Disco`} 
-		width="1800" 
-		height="900" 
+	<Image
+		src={image}
+		alt={imageAlt || `${title} with TeeJays Disco`}
+		width={1800}
+		height={900}
 		loading="eager"
-		fetchpriority="high" 
-		decoding="async" 
+		fetchpriority="high"
+		decoding="async"
 		sizes="100vw"
 	/>
 	<div class="page-hero-wash" aria-hidden="true"></div>

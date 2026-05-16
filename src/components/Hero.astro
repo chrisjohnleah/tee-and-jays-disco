@@ -1,6 +1,8 @@
 ---
 import { contact } from '../data/site';
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
+import djPortrait from '../assets/images/john-tony-djs-portrait.png';
 ---
 
 <section class="hero">
@@ -45,13 +47,12 @@ import Icon from './Icon.astro';
 		</div>
 
 		<figure class="hero-photo portrait">
-			<img
-				src="/images/john-tony-djs-portrait.png"
+			<Image
+				src={djPortrait}
 				alt="Tony and John of TeeJays Disco at the decks under stage lights, headphones around their necks, mixing for a live crowd."
-				width="1132"
-				height="1414"
 				fetchpriority="high"
 				decoding="async"
+				loading="eager"
 			/>
 			<figcaption>Tony &amp; John — your DJs.</figcaption>
 			<div class="hero-sticker" aria-hidden="true">

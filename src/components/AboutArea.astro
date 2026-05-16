@@ -1,5 +1,6 @@
 ---
 import { areas, bullets } from '../data/site';
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 ---
 
@@ -17,7 +18,14 @@ import Icon from './Icon.astro';
 				))}
 			</ul>
 		</div>
-		<img src="/images/gallery/dj-setup.jpg" alt="TeeJays Disco professional sound and lighting setup at a venue" width="1200" height="800" loading="lazy" decoding="async" />
+		<Image
+			src="/images/gallery/dj-setup.jpg"
+			alt="TeeJays Disco professional sound and lighting setup at a venue"
+			width={1200}
+			height={800}
+			loading="lazy"
+			decoding="async"
+		/>
 		<div class="mini-signature">
 			<Icon name="star" />
 			<strong>35+ Years Each</strong>

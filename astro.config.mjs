@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import critters from 'astro-critters';
 import compress from '@playform/compress';
 
+
 const serviceHubs = [
 	'wedding-djs',
 	'birthday-party-djs',
@@ -39,6 +40,23 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare(),
   site: 'https://teeandjaysdisco.com',
+
+  // Astro 6 image optimization — AVIF first, then WebP, solid quality, generates responsive srcset
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        quality: 82,
+        formats: ['avif', 'webp', 'jpeg'],
+        // sensible widths for this DJ marketing site
+        widths: [400, 600, 800, 1200, 1600],
+      },
+    },
+    // Add remote image domains here if you ever use external CDNs
+    domains: [],
+    remotePatterns: [],
+  },
+
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/404'),

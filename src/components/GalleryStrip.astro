@@ -1,5 +1,6 @@
 ---
 import { gallery } from '../data/site';
+import { Image } from 'astro:assets';
 import SectionTitle from './SectionTitle.astro';
 
 interface Props {
@@ -36,7 +37,17 @@ const images = diversePicks;
 <section class="gallery" id="gallery">
 	<SectionTitle title="Gallery" subtitle="A glimpse from weddings, parties and events across Greater Manchester." compact />
 	<div class="gallery-row">
-		{images.map((image) => <img src={image.src} alt={image.alt} width="900" height="600" loading="lazy" decoding="async" />)}
+		{images.map((image) => (
+		<Image
+			src={image.src}
+			alt={image.alt}
+			width={900}
+			height={600}
+			loading="lazy"
+			decoding="async"
+			sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
+		/>
+	))}
 	</div>
 	<p>See the full gallery — <a href="/gallery/">filter by event type</a>.</p>
 </section>

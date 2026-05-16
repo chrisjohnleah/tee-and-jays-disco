@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import HomeCTA from '../components/HomeCTA.astro';
 import PageHero from '../components/PageHero.astro';
 import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
 import { gallery, galleryCategories } from '../data/site';
 
 export const prerender = true;
@@ -41,7 +42,13 @@ export const prerender = true;
 			<div class="gallery-masonry" data-gallery>
 				{gallery.map((item) => (
 					<figure class="gallery-item" data-category={item.category}>
-						<img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+						<Image
+						src={item.src}
+						alt={item.alt}
+						loading="lazy"
+						decoding="async"
+						inferSize
+					/>
 					</figure>
 				))}
 			</div>
