@@ -1,0 +1,43 @@
+# ============================================================
+# TeeJays Disco — Cloudflare Workers Assets Redirects
+# Best practice redirects for a marketing site
+# ============================================================
+
+# Force trailing slashes on key pages (Astro SSR convention + SEO)
+# This prevents duplicate content between /contact and /contact/
+/contact    /contact/     301
+/terms      /terms/       301
+/privacy    /privacy/     301
+/about      /about/       301
+/faq        /faq/         301
+/gallery    /gallery/     301
+/reviews    /reviews/     301
+/services   /services/    301
+/areas      /areas/       301
+
+# Service hub pages (keep consistent with trailing slash)
+/wedding-djs              /wedding-djs/               301
+/birthday-party-djs       /birthday-party-djs/        301
+/anniversary-djs          /anniversary-djs/           301
+/corporate-djs            /corporate-djs/             301
+/school-disco-djs         /school-disco-djs/          301
+/pub-club-djs             /pub-club-djs/              301
+/community-djs            /community-djs/             301
+
+# www → apex (canonical domain)
+# Change the domain below if you ever switch to www as primary
+https://www.teeandjaysdisco.com/*   https://teeandjaysdisco.com/:splat   301!
+
+# Old / booking paths that people might still have bookmarked
+/book               /contact/   301
+/bookings           /contact/   301
+/enquiry            /contact/   301
+/get-a-quote        /contact/   301
+
+# Common typo / vanity redirects
+/dj                 /services/  301
+/djs                /services/  301
+
+# Sitemap & robots should never redirect (just in case)
+#/sitemap.xml       /sitemap.xml   200
+#/robots.txt        /robots.txt    200

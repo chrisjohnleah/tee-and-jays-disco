@@ -1,0 +1,98 @@
+# ============================================================
+# TeeJays Disco — Cloudflare Workers Assets Best Practice Headers
+# Place this in /public so Astro copies it to dist/client/_headers
+# ============================================================
+
+# ------------------------------------------------------------
+# Global Security Headers (applied to everything)
+# ------------------------------------------------------------
+/*
+  # Strong HSTS (1 year, preload ready)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Prevent clickjacking
+  X-Frame-Options: DENY
+
+  # Prevent MIME type sniffing
+  X-Content-Type-Options: nosniff
+
+  # Good referrer policy
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Lock down powerful browser features
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+
+  # Basic CSP — tuned for Astro + form submissions + Google Analytics
+  # Adjust if you add more third-party scripts (Hotjar, etc.)
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
+
+# ------------------------------------------------------------
+# Immutable long-cache for hashed Astro assets (best perf)
+# ------------------------------------------------------------
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+  X-Robots-Tag: noindex
+
+# ------------------------------------------------------------
+# All images (gallery + heroes) — long cache, immutable
+# (We also get Cloudflare Images optimization via the IMAGES binding)
+# ------------------------------------------------------------
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Favicons & PWA assets
+/icon-*.png
+  Cache-Control: public, max-age=31536000, immutable
+/favicon*
+  Cache-Control: public, max-age=31536000, immutable
+/apple-touch-icon.png
+  Cache-Control: public, max-age=31536000, immutable
+/manifest.webmanifest
+  Cache-Control: public, max-age=86400
+
+# ------------------------------------------------------------
+# Fonts (if you ever add self-hosted ones)
+# ------------------------------------------------------------
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ------------------------------------------------------------
+# JavaScript & CSS (non-hashed, defensive)
+# ------------------------------------------------------------
+*.js
+  Cache-Control: public, max-age=31536000, immutable
+*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# ------------------------------------------------------------
+# HTML pages — short cache + revalidate (SSR content can change)
+# Use stale-while-revalidate for excellent perceived performance
+# ------------------------------------------------------------
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate, stale-while-revalidate=86400
+  # Alternative more aggressive option (uncomment if you want):
+  # Cache-Control: public, s-maxage=300, stale-while-revalidate=86400
+
+# ------------------------------------------------------------
+# Important files that should be reasonably fresh
+# ------------------------------------------------------------
+/sitemap.xml
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/robots.txt
+  Cache-Control: public, max-age=86400
+
+# ------------------------------------------------------------
+# Contact / booking pages — never cache in shared caches
+# (prevents stale phone numbers or form state)
+# ------------------------------------------------------------
+/contact/*
+  Cache-Control: private, max-age=0, must-revalidate
+/contact
+  Cache-Control: private, max-age=0, must-revalidate
+
+# ------------------------------------------------------------
+# API-like or dynamic endpoints (if you add any later)
+# ------------------------------------------------------------
+/api/*
+  Cache-Control: no-store
